@@ -105,7 +105,8 @@ tasks.register<Test>("nativeTest") {
         else -> "linux"
     }
     val arch = if (System.getProperty("os.arch") in setOf("aarch64", "arm64")) "arm64" else "x86_64"
-    val nativeRoot = layout.projectDirectory.dir("native/$os-$arch/native").asFile
+    val nativeRoot = providers.gradleProperty("nativeRoot").orNull?.let(::file)
+        ?: layout.projectDirectory.dir("native/$os-$arch/native").asFile
     systemProperty("anyplayer.nativeRoot", nativeRoot.absolutePath)
     systemProperty("java.awt.headless", "false")
     jvmArgs("--enable-native-access=ALL-UNNAMED", "--add-modules=jdk.httpserver")
@@ -132,3 +133,7 @@ tasks.matching { it.name.startsWith("buildPluginVariants_") }.configureEach {
 }
 
 tasks.withType<Jar>().configureEach { from("LICENSE") { into("META-INF") } }
+
+tasks.withType<Zip>().configureEach {
+    filesMatching("**/native/bin/*") { permissions { unix("rwxr-xr-x") } }
+}

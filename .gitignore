@@ -10,3 +10,4 @@ native/downloads/
 *.iml
 *.hprof
 hs_err_pid*
+__pycache__/

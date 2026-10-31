@@ -18,5 +18,99 @@
       "sha256": "4cc94bd272903914c04f4f9a9f53a6c94b5ea6c6454cf738d29fa182c41e8a29",
       "checksumProvenance": "Computed from the versioned archive downloaded over verified upstream HTTPS on 2026-10-31."
     }
+  },
+  "windows-arm64": {
+    "vlc": {
+      "version": "3.0.24",
+      "url": "https://download.videolan.org/pub/videolan/vlc/3.0.24/winarm64/vlc-3.0.24-winarm64.zip",
+      "sha256": "f096226211f67f8e06e50cd0d6a948d842db128ff22a676dc1ca1cc6114baba5",
+      "archive": "zip"
+    },
+    "ffmpeg": {
+      "version": "N-128212-g17a4a474f4",
+      "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-30-13-01/ffmpeg-N-128212-g17a4a474f4-winarm64-gpl.zip",
+      "sha256": "e6854c1f1a0a691b098d4e845577defcc3d0657d767b85dbe69d61ae8300ff78",
+      "archive": "zip"
+    },
+    "mediainfo": {
+      "version": "26.10",
+      "url": "https://mediaarea.net/download/binary/mediainfo/26.10/MediaInfo_CLI_26.10_Windows_ARM64.zip",
+      "sha256": "0667b568d96f098c3f23ef111dafa7d66f10e078ccb568b589975191131f8a0d",
+      "archive": "zip"
+    }
+  },
+  "mac-x86_64": {
+    "vlc": {
+      "version": "3.0.24",
+      "url": "https://download.videolan.org/pub/videolan/vlc/3.0.24/macosx/vlc-3.0.24-intel64.dmg",
+      "sha256": "1ef6c903e2dc026d4e58ddf7b2a9ed0eb6f8caf80a9a9f46f96490340b962707",
+      "archive": "dmg"
+    },
+    "ffmpeg": {
+      "provider": "homebrew",
+      "formula": "ffmpeg",
+      "version": "9.0.2"
+    },
+    "mediainfo": {
+      "provider": "homebrew",
+      "formula": "media-info",
+      "version": "26.10"
+    }
+  },
+  "mac-arm64": {
+    "vlc": {
+      "version": "3.0.24",
+      "url": "https://download.videolan.org/pub/videolan/vlc/3.0.24/macosx/vlc-3.0.24-arm64.dmg",
+      "sha256": "64a89d93cdd30b0e97131743e246373db82d6826ea882d265d46d74b136da2b7",
+      "archive": "dmg"
+    },
+    "ffmpeg": {
+      "provider": "homebrew",
+      "formula": "ffmpeg",
+      "version": "9.0.2"
+    },
+    "mediainfo": {
+      "provider": "homebrew",
+      "formula": "media-info",
+      "version": "26.10"
+    }
+  },
+  "linux-x86_64": {
+    "vlc": {
+      "provider": "rpmfusion-el8",
+      "package": "vlc-core",
+      "version": "3.0.24"
+    },
+    "ffmpeg": {
+      "version": "N-128212-g17a4a474f4",
+      "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-30-13-01/ffmpeg-N-128212-g17a4a474f4-linux64-gpl.tar.xz",
+      "sha256": "610154a35f9ffbb1aa2dd7f9edfd21dea8c516fc8173fcbf817b003c6b1f44cc",
+      "archive": "tar.xz"
+    },
+    "mediainfo": {
+      "provider": "epel8",
+      "package": "mediainfo"
+    },
+    "container": "rockylinux:8.10",
+    "glibcBaseline": "2.28"
+  },
+  "linux-arm64": {
+    "vlc": {
+      "provider": "rpmfusion-el8",
+      "package": "vlc-core",
+      "version": "3.0.24"
+    },
+    "ffmpeg": {
+      "version": "N-128212-g17a4a474f4",
+      "url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-30-13-01/ffmpeg-N-128212-g17a4a474f4-linuxarm64-gpl.tar.xz",
+      "sha256": "5a58800a1b8ecd03432f0385b547a08601282e7fd1dbd6da41d74fbe8437b8c7",
+      "archive": "tar.xz"
+    },
+    "mediainfo": {
+      "provider": "epel8",
+      "package": "mediainfo"
+    },
+    "container": "rockylinux:8.10",
+    "glibcBaseline": "2.28"
   }
 }

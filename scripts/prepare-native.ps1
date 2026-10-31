@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('windows-x86_64')]
+    [ValidateSet('windows-x86_64', 'windows-arm64')]
     [string]$Target = 'windows-x86_64',
     [string]$Repository = (Split-Path -Parent $PSScriptRoot)
 )
@@ -29,7 +29,7 @@ try {
 foreach ($name in @('vlc', 'ffmpeg', 'mediainfo')) {
     $dependency = $dependencies.$name
     if ($dependency.sha256 -notmatch '^[a-fA-F0-9]{64}$') { throw "Invalid checksum for $name." }
-    $extension = if ($name -eq 'ffmpeg') { '.7z' } else { '.zip' }
+    $extension = if ($dependency.archive) { '.' + $dependency.archive } elseif ($name -eq 'ffmpeg') { '.7z' } else { '.zip' }
     $identity = $name + '-' + $dependency.sha256.ToLowerInvariant()
     $archive = Join-Path $downloads ($identity + $extension)
     if (-not (Test-Path -LiteralPath $archive)) {
@@ -65,7 +65,7 @@ foreach ($name in @('vlc', 'ffmpeg', 'mediainfo')) {
             if (-not $file) { throw "Missing $tool in the verified archive." }
             Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $staging 'bin') -Force
         }
-        $license = Get-ChildItem -LiteralPath $extracted -Filter LICENSE -Recurse -File | Select-Object -First 1
+        $license = Get-ChildItem -LiteralPath $extracted -Recurse -File | Where-Object Name -Match '^(LICENSE|COPYING)(\..*)?$' | Select-Object -First 1
         if ($license) { Copy-Item -LiteralPath $license.FullName -Destination (Join-Path $staging 'licenses\ffmpeg.txt') -Force }
     } else {
         foreach ($file in @('MediaInfo.exe', 'LIBCURL.DLL')) {
@@ -79,6 +79,21 @@ Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $staging 'dependenc
 foreach ($file in @('vlc\libvlc.dll', 'vlc\libvlccore.dll', 'bin\ffprobe.exe', 'bin\MediaInfo.exe', 'bin\LIBCURL.DLL')) {
     if (-not (Test-Path -LiteralPath (Join-Path $staging $file) -PathType Leaf)) { throw "Missing native file: $file" }
 }
+if ($Target -eq 'windows-arm64') {
+    foreach ($file in @('bin\ffmpeg.exe','bin\ffprobe.exe','bin\MediaInfo.exe','vlc\libvlc.dll','vlc\libvlccore.dll')) {
+        $peReader = [IO.BinaryReader]::new([IO.File]::OpenRead((Join-Path $staging $file)))
+        try {
+            if ($peReader.ReadUInt16() -ne 0x5A4D) { throw "Not a PE binary: $file" }
+            $peReader.BaseStream.Position = 0x3C
+            $offset = $peReader.ReadInt32()
+            $peReader.BaseStream.Position = $offset
+            if ($peReader.ReadUInt32() -ne 0x4550 -or $peReader.ReadUInt16() -ne 0xAA64) { throw "Not an ARM64 binary: $file" }
+        } finally { $peReader.Dispose() }
+    }
+}
+$canRunNative = ($Target -eq 'windows-x86_64' -and [Environment]::Is64BitProcess) -or
+    ($Target -eq 'windows-arm64' -and [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -eq 'Arm64')
+if ($canRunNative) {
 $ffmpeg = Join-Path $staging 'bin\ffmpeg.exe'
 $decoders = & $ffmpeg -hide_banner -decoders 2>&1 | Out-String
 if ($LASTEXITCODE -ne 0) { throw 'The prepared FFmpeg cannot enumerate decoders.' }
@@ -90,6 +105,7 @@ if ($LASTEXITCODE -ne 0) { throw 'The prepared ffprobe cannot run.' }
 $probeVersion | Select-Object -First 1
 & (Join-Path $staging 'bin\MediaInfo.exe') --Version
 if ($LASTEXITCODE -ne 0) { throw 'The prepared MediaInfo cannot run.' }
+} else { Write-Output 'Foreign-architecture binaries checked structurally; runtime checks require the matching CPU.' }
 foreach ($path in @($bundle, $backup, $staging)) { Assert-PreparedPath $path }
 if (Test-Path -LiteralPath $bundle) { Move-Item -LiteralPath $bundle -Destination $backup }
 try { Move-Item -LiteralPath $staging -Destination $bundle }
