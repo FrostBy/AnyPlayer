@@ -1,0 +1,12 @@
+.gradle/
+.intellijPlatform/
+.idea/
+.kotlin/
+.codex/
+.serena/
+build/
+native/*/native/
+native/downloads/
+*.iml
+*.hprof
+hs_err_pid*

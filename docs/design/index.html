@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Any Player | Design study</title>
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body data-theme="dark">
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14" stroke-width="4"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zm12-1q5 4 0 8m3-11q8 7 0 14"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m7 8-4 4 4 4m-3-4h9a6 6 0 1 1-5 10"/><path d="M11 4v4m6-2 2-2"/></symbol>
+    <symbol id="i-forward" viewBox="0 0 24 24"><path d="m17 8 4 4-4 4m3-4h-9a6 6 0 1 0 5 10"/><path d="M13 4v4M7 6 5 4"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h7l2 3h9v11H3z"/></symbol>
+    <symbol id="i-film" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 3v18m8-18v18M4 8h4m-4 8h4m8-8h4m-4 8h4"/></symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24"><path d="M4 10v4m4-8v12m4-15v18m4-15v12m4-8v4"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="m3 17 5-5 4 4 4-6 5 7"/><circle cx="8" cy="8" r="1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="1"/><path d="M16 5V3H3v13h2"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m8 5 7 7-7 7"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="9" cy="18" r="2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m4 6 6 6-6 6m9 0h7"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m8 9-3 3 3 3m8-6 3 3-3 3"/></symbol>
+  </defs></svg>
+
+  <header class="study-header">
+    <div><h1>Any Player</h1><p>A media workspace inside IntelliJ IDEA.</p></div>
+    <nav class="study-nav" aria-label="Design study"><button id="show-workbench" class="active" aria-pressed="true">Editor studies</button><button id="show-references" aria-pressed="false">Moodboard</button><a href="README.md">Design notes ↗</a></nav>
+  </header>
+
+  <main>
+    <section id="workbench" aria-label="Interactive editor design">
+      <div class="study-controls">
+        <div class="preset-group" role="group" aria-label="Media study"><button data-preset="video" aria-pressed="true">Video</button><button data-preset="audio" aria-pressed="false">Audio</button><button data-preset="image" aria-pressed="false">Image</button><button data-preset="animation" aria-pressed="false">Animation</button><button data-preset="info" aria-pressed="false">MediaInfo</button></div>
+        <div class="scenario-controls"><label>State <select id="scenario"><option value="ready">Ready</option><option value="loading">Loading</option><option value="unsupported">Unsupported file</option><option value="native">Media engine unavailable</option><option value="analysis-error">Analysis failed</option><option value="no-audio">Video without audio</option></select></label><button id="split-toggle" aria-pressed="false">Split editor</button><button id="theme-toggle" aria-label="Switch to light theme">Light theme</button></div>
+      </div>
+
+      <div class="ide-frame" id="ide-frame">
+        <div class="ide-titlebar"><span class="ide-logo">IJ</span><span class="project-title">media-samples</span><span class="branch-label">⑂ main</span><div class="titlebar-spacer"></div><span class="titlebar-tool" aria-hidden="true">▷</span><span class="titlebar-tool" aria-hidden="true">⌕</span><span class="titlebar-menu" aria-hidden="true">☰</span></div>
+        <div class="ide-workspace">
+          <aside class="tool-stripe" aria-hidden="true"><span class="stripe-active"><svg><use href="#i-folder"/></svg></span><span><svg><use href="#i-search"/></svg></span><span>⑂</span><span class="stripe-bottom"><svg><use href="#i-terminal"/></svg></span></aside>
+          <aside class="project-tree" aria-label="Example project files"><div class="tree-heading">Project <span>⋯</span></div><div class="tree-row tree-root">⌄ <svg><use href="#i-folder"/></svg> media-samples</div><div class="tree-row folder-row">⌄ <svg><use href="#i-folder"/></svg> assets</div><button class="tree-row file-row selected" data-file="video"><svg><use href="#i-film"/></svg> coast-flight.mp4</button><button class="tree-row file-row" data-file="audio"><svg><use href="#i-audio"/></svg> field-recording.flac</button><button class="tree-row file-row" data-file="image"><svg><use href="#i-image"/></svg> coast-study.png</button><div class="tree-row readme-row">◻ README.md</div></aside>
+          <div class="editor-workspace">
+            <aside class="code-split" aria-label="Example code editor"><div class="code-tab">build.gradle.kts</div><pre><span class="code-comment">// A regular split editor</span>
+
+<span class="code-keyword">plugins</span> {
+    kotlin(<span class="code-string">"jvm"</span>)
+    id(<span class="code-string">"org.jetbrains.intellij.platform"</span>)
+}
+
+<span class="code-keyword">group</span> = <span class="code-string">"anyplayer"</span>
+
+<span class="code-comment">// Media stays in its own tab.</span></pre></aside>
+            <section class="editor" id="editor" aria-label="Any Player file editor" tabindex="0">
+              <div class="editor-tabs"><span class="inactive-tab">README.md</span><span class="selected-tab"><svg id="file-icon"><use href="#i-film"/></svg><span id="file-name">coast-flight.mp4</span><span class="tab-close" aria-hidden="true">×</span></span><span class="tab-tools" aria-hidden="true">⋮</span></div>
+              <div id="editor-body" class="editor-body"></div>
+            </section>
+          </div>
+        </div>
+        <div class="ide-status"><span>media-samples <span class="status-separator">/</span> assets <span class="status-separator">/</span> <span id="status-file">coast-flight.mp4</span></span><span>UTF-8 <span class="status-separator">|</span> 4 spaces</span></div>
+      </div>
+
+      <div class="study-caption"><span class="concept-dot"></span><span>Interactive design preview. Artwork, signal, metadata and playback are illustrative.</span><span class="caption-end">IDEA-native components in the final plugin.</span></div>
+      <div class="design-decisions"><article><h2>Content gets the space</h2><p>Video and images occupy the editor. Audio gives that space to the spectrogram. Transport stays in one predictable region.</p></article><article><h2>Analysis stays close</h2><p>Open the analysis drawer below video or inspect the track at full size. Both views share the player's source timeline.</p></article><article><h2>Details when needed</h2><p>Tracks, subtitles and speed live in compact actions. MediaInfo has its own readable view with a complete report.</p></article></div>
+    </section>
+
+    <section id="references" hidden aria-label="Annotated moodboard">
+      <div class="reference-intro"><h2>Reference board</h2><p>Three sources, each with a specific job. The final visual system comes from the active IDEA theme.</p></div>
+      <div class="reference-grid">
+        <figure><a href="https://plugins.jetbrains.com/docs/intellij/ui-overview.html" target="_blank" rel="noreferrer"><img src="https://plugins.jetbrains.com/docs/intellij/images/ui_overview_main_window.png" alt="JetBrains diagram of editor, tool windows, toolbar and status bar"></a><figcaption><span class="reference-type">Structure</span><h3>IntelliJ IDEA</h3><p>Use the editor's existing frame, native density, typography and focus treatment. The plugin occupies a file tab and follows the active IDE theme.</p><a href="https://plugins.jetbrains.com/docs/intellij/ui-guidelines-welcome.html" target="_blank" rel="noreferrer">JetBrains UI guidelines ↗</a></figcaption></figure>
+        <figure><a href="https://iina.io/" target="_blank" rel="noreferrer"><img src="https://iina.io/img/screenshot.png" alt="IINA player showing video and a compact transport panel"></a><figcaption><span class="reference-type">Playback hierarchy</span><h3>IINA</h3><p>Make play/pause and the timeline immediately readable, with secondary controls grouped nearby. Adapt the hierarchy to a fixed IDEA toolbar so controls never cover media.</p><a href="https://iina.io/" target="_blank" rel="noreferrer">IINA player ↗</a></figcaption></figure>
+        <figure><a href="https://manual.audacityteam.org/man/spectrogram_view.html" target="_blank" rel="noreferrer"><img class="spectral-reference" src="https://manual.audacityteam.org/m/images/6/61/spectrogramview_spectrogram_display.png" alt="Audacity spectrogram with a frequency ruler and sequential intensity colors"></a><figcaption><span class="reference-type">Signal readability</span><h3>Audacity</h3><p>Frequency and time have explicit axes; color describes signal intensity. Keep a common time cursor and a visible dB legend for both full-track and live views.</p><a href="https://manual.audacityteam.org/man/spectrogram_view.html" target="_blank" rel="noreferrer">Spectrogram reference ↗</a></figcaption></figure>
+        <figure><a href="https://iina.io/" target="_blank" rel="noreferrer"><img src="https://iina.io/img/ui2.png" alt="IINA examples of compact grouped speed, subtitle and aspect controls"></a><figcaption><span class="reference-type">Secondary actions</span><h3>Compact, contextual controls</h3><p>Speed, audio tracks, subtitles and fit controls are contextual. Keep the main toolbar short and move extra choices into popups when the editor is narrow.</p><a href="https://plugins.jetbrains.com/docs/intellij/layout.html" target="_blank" rel="noreferrer">IDEA layout rules ↗</a></figcaption></figure>
+      </div>
+      <div class="palette-notes"><div><h3>UI uses theme roles</h3><p>Panel, editor, text, separator, selection and focus colors come from IDEA in production. Dark/light values here approximate the standard themes for review.</p><div class="swatches"><span style="--swatch:#1e1f22">Editor</span><span style="--swatch:#2b2d30">Panel</span><span style="--swatch:#3574f0">Focus</span><span style="--swatch:#dfe1e5">Text</span></div></div><div><h3>Signal has its own scale</h3><p>A stable dark-blue, violet, orange and white intensity ramp keeps the plot meaningful across themes. Hz, source time and dB remain readable at either brightness.</p><div class="signal-ramp"><span>−96 dB</span><span>0 dB</span></div></div></div>
+      <p class="reference-credit">Reference images are loaded from their authors' public sites, remain their property, and are not bundled in this repository. Coast artwork in the editor study is an original SVG created for this design.</p>
+    </section>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="preview.js"></script>
+</body>
+</html>

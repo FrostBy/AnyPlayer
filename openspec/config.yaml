@@ -1,0 +1,13 @@
+schema: spec-driven
+context: |
+  Any Player is a free, open-source IntelliJ Platform media viewer.
+  Publisher: Romanovsky, https://plugins.jetbrains.com/vendor/Romanovsky.
+  Project text is English; discuss decisions with the owner in Russian.
+  Accepted stack: Kotlin/Swing, libVLC 3 with vlcj 4, FFmpeg CLI, MediaInfo CLI.
+  Target JetBrains IDEs on IntelliJ Platform 2026.1 and explicitly verified later
+  releases, on their officially supported desktop OS/CPU combinations.
+  Bundle matching native dependencies. Open media by HTTP(S) URL or local path.
+  Both full-file and live spectrograms are required. VLC owns audible playback;
+  live analysis follows the source track and the playback timeline.
+  The owner approved the design/specification and authorized implementation.
+  Public name: Any Player. Artifact/repository name: AnyPlayer. Plugin ID: dev.anyplayer.

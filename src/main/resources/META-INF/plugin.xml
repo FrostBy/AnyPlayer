@@ -1,0 +1,26 @@
+<idea-plugin require-restart="true">
+    <id>dev.anyplayer</id>
+    <name>Any Player</name>
+    <vendor url="https://plugins.jetbrains.com/vendor/Romanovsky">Romanovsky</vendor>
+    <description><![CDATA[
+        <p>A video player, audio player and image viewer for your IDE.</p>
+        <p>Open media from your project, a local path or a direct HTTP(S) URL.</p>
+        <ul>
+            <li>Video and audio playback with seeking, speed, volume, audio tracks and subtitles.</li>
+            <li>Images and seekable GIF, animated WebP and APNG with frame stepping.</li>
+            <li>Live and full-file spectrograms of the selected source audio track.</li>
+            <li>Interactive waveform with zoom, scrolling and separate audio channels.</li>
+            <li>MediaInfo properties and complete reports.</li>
+        </ul>
+    ]]></description>
+    <depends>com.intellij.modules.platform</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="AnyPlayer Media" implementationClass="dev.anyplayer.editor.MediaFileType" fieldName="INSTANCE" extensions="mp4;m4v;mkv;mov;webm;avi;wmv;mpeg;mpg;mp3;wav;flac;ogg;opus;aac;m4a;aiff"/>
+        <fileEditorProvider implementation="dev.anyplayer.editor.MediaEditorProvider"/>
+    </extensions>
+    <actions>
+        <action id="AnyPlayer.OpenMedia" class="dev.anyplayer.editor.OpenMediaAction" text="Open Media…" description="Open a media URL or local path in AnyPlayer">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>

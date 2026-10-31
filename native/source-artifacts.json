@@ -1,0 +1,57 @@
+{
+  "target": "windows-x86_64",
+  "binaryManifest": "dependencies.json",
+  "sourceCompleteness": "core-artifacts-collected-external-library-correspondence-pending",
+  "artifacts": [
+    {
+      "component": "FFmpeg",
+      "version": "46f23be8b1976ed4c8ec85584daabcf0e57a7b9e",
+      "file": "ffmpeg-46f23be8b1976ed4c8ec85584daabcf0e57a7b9e.tar.gz",
+      "url": "https://codeload.github.com/FFmpeg/FFmpeg/tar.gz/46f23be8b1976ed4c8ec85584daabcf0e57a7b9e",
+      "sha256": "4f92bb729355928f4e09e064df7f5b1f35a87d4077620e033ceef301be34a9e9",
+      "bytes": 18042073,
+      "upstreamSha256": null
+    },
+    {
+      "component": "VLC",
+      "version": "3.0.24",
+      "file": "vlc-3.0.24.tar.xz",
+      "url": "https://download.videolan.org/pub/videolan/vlc/3.0.24/vlc-3.0.24.tar.xz",
+      "sha256": "e7cab503d1d7d5849b89d2cf0e1ee60d0ef6d012407791b644b9cfc0cc225fdf",
+      "bytes": 27620304,
+      "upstreamSha256": "e7cab503d1d7d5849b89d2cf0e1ee60d0ef6d012407791b644b9cfc0cc225fdf"
+    },
+    {
+      "component": "MediaInfo",
+      "version": "26.10",
+      "file": "mediainfo_26.10_AllInclusive.7z",
+      "url": "https://mediaarea.net/download/source/mediainfo/26.10/mediainfo_26.10_AllInclusive.7z",
+      "sha256": "c391b4962778dc7b634a4cd721b4ed25f886a02fada083a38f72ef09ea578de2",
+      "bytes": 21716656,
+      "upstreamSha256": null
+    },
+    {
+      "component": "vlcj",
+      "version": "4.12.1",
+      "file": "vlcj-4.12.1-sources.jar",
+      "url": "https://repo.maven.apache.org/maven2/uk/co/caprica/vlcj/4.12.1/vlcj-4.12.1-sources.jar",
+      "sha256": "c045e68d53a3ffdb0bf27416981c5acbd12160a80f96a12d0bfdaa434b7240e6",
+      "bytes": 420083,
+      "upstreamSha256": null
+    },
+    {
+      "component": "vlcj-natives",
+      "version": "4.12.0",
+      "file": "vlcj-natives-4.12.0-sources.jar",
+      "url": "https://repo.maven.apache.org/maven2/uk/co/caprica/vlcj-natives/4.12.0/vlcj-natives-4.12.0-sources.jar",
+      "sha256": "7b17498b80af6e2ebaff898877a0a155f5c2bf07e578636eabe64b24546c1a59",
+      "bytes": 132611,
+      "upstreamSha256": null
+    }
+  ],
+  "remaining": [
+    "Exact source/build correspondence for external libraries in the Gyan static build",
+    "VLC Windows contrib-library source/build correspondence",
+    "Review notices/source materials for the bundled LIBCURL.DLL"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "windows-x86_64": {
+    "vlc": {
+      "version": "3.0.24",
+      "url": "https://download.videolan.org/pub/videolan/vlc/3.0.24/win64/vlc-3.0.24-win64.zip",
+      "sha256": "fcf30850371ad10c9373cc4f0f4501e7dee49e3e9ae9f20c72fb2661a1ca6323",
+      "upstreamChecksum": "https://download.videolan.org/pub/videolan/vlc/3.0.24/win64/vlc-3.0.24-win64.zip.sha256"
+    },
+    "ffmpeg": {
+      "version": "2026-10-25-git-46f23be8b1-essentials",
+      "url": "https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-2026-10-25-git-46f23be8b1-essentials_build.7z",
+      "sha256": "055dd68f62e2f55758d9bdf51b5480ceb0172c7d05b41e088cadcec121cec681",
+      "upstreamChecksum": "https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-2026-10-25-git-46f23be8b1-essentials_build.7z.sha256"
+    },
+    "mediainfo": {
+      "version": "26.10",
+      "url": "https://mediaarea.net/download/binary/mediainfo/26.10/MediaInfo_CLI_26.10_Windows_x64.zip",
+      "sha256": "4cc94bd272903914c04f4f9a9f53a6c94b5ea6c6454cf738d29fa182c41e8a29",
+      "checksumProvenance": "Computed from the versioned archive downloaded over verified upstream HTTPS on 2026-10-31."
+    }
+  }
+}
