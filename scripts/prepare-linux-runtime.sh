@@ -16,19 +16,20 @@ cp /usr/bin/mediainfo "$stage/bin/mediainfo"
 cp -L /usr/lib64/libcurl.so.4 "$stage/vlc/lib/libcurl.so.4"
 python3.9 - "$stage" <<'PY'
 from pathlib import Path
-import shutil,subprocess,sys,json
+import os,shutil,subprocess,sys,json
 r=Path(sys.argv[1]); lib=r/'vlc/lib'
 pending=[(p,p) for p in list((r/'vlc').rglob('*.so'))+[r/'bin/mediainfo',lib/'libcurl.so.4']]
 seen=set(); owners=set()
+environment=dict(os.environ,LD_LIBRARY_PATH='/usr/lib64/samba:/usr/lib64')
 system={'libc.so.6','libm.so.6','libdl.so.2','libpthread.so.0','librt.so.1','libresolv.so.2','libutil.so.1','libanl.so.1'}
 while pending:
     p,original=pending.pop()
     if p in seen: continue
     seen.add(p)
-    out=subprocess.run(['ldd',str(original)],capture_output=True,text=True)
+    out=subprocess.run(['ldd',str(original)],capture_output=True,text=True,env=environment)
     if out.returncode: raise RuntimeError('Cannot inspect '+str(p)+': '+out.stderr)
     for line in out.stdout.splitlines():
-        if 'not found' in line: raise RuntimeError('Missing dependency: '+line)
+        if 'not found' in line: raise RuntimeError('Missing dependency of '+str(original)+': '+line)
         fields=line.split()
         src=next((Path(x) for x in fields if x.startswith('/')),None)
         if not src or src.name in system or src.name.startswith('ld-linux'): continue
