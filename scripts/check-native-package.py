@@ -10,7 +10,7 @@ import zipfile
 target = sys.argv[1]
 os_name, arch = target.split('-', 1)
 archive = Path('build/distributions') / f'AnyPlayer-0.1.0-{target}.zip'
-destination = Path('build/installed').resolve()
+destination = Path(sys.argv[2] if len(sys.argv) > 2 else 'build/installed').resolve()
 if destination.exists():
     raise RuntimeError('Use a clean installation test directory')
 with zipfile.ZipFile(archive) as package:

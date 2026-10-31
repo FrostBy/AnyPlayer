@@ -77,6 +77,6 @@ The plugin uses the IDE's JNA and does not package another copy. Tests use the i
 
 ## License
 
-Any Player is licensed under [GNU GPLv3](LICENSE). Bundled dependencies retain their own notices; see [native runtime preparation](native/README.md). Dependency source archives and complete redistribution materials remain part of public release preparation.
+Any Player is licensed under [GNU GPLv3](LICENSE). Bundled dependencies retain their own notices. Core dependency source archives accompany the GitHub release; [third-party notices](THIRD_PARTY_NOTICES.md) record their inventory and the remaining external-library/build correspondence.
 
 Waveform timeline interaction is adapted from Masaki Aida's [Audio Player v1.2.1](https://github.com/aida0710/jetbrains-audio-player-plugin/tree/v1.2.1), under the [retained MIT license](src/main/resources/META-INF/licenses/audio-player-MIT.txt). Its persistent-settings and channel-view features also informed this implementation. Playback remains on libVLC.

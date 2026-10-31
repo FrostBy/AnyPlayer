@@ -1,5 +1,4 @@
 {
-  "target": "windows-x86_64",
   "binaryManifest": "dependencies.json",
   "sourceCompleteness": "core-artifacts-collected-external-library-correspondence-pending",
   "artifacts": [
@@ -47,11 +46,58 @@
       "sha256": "7b17498b80af6e2ebaff898877a0a155f5c2bf07e578636eabe64b24546c1a59",
       "bytes": 132611,
       "upstreamSha256": null
+    },
+    {
+      "component": "FFmpeg",
+      "version": "17a4a474f4013bfef4393abaca282078e24efc35",
+      "file": "ffmpeg-17a4a474f4013bfef4393abaca282078e24efc35.tar.gz",
+      "url": "https://codeload.github.com/FFmpeg/FFmpeg/tar.gz/17a4a474f4013bfef4393abaca282078e24efc35",
+      "sha256": "d432fbe15375a9c22d4b5e9745019a9d486bcf87e86cbbff64a4cd84d6092c66",
+      "bytes": 18052035,
+      "upstreamSha256": null,
+      "targets": [
+        "windows-arm64",
+        "linux-x86_64",
+        "linux-arm64"
+      ]
+    },
+    {
+      "component": "FFmpeg",
+      "version": "9.0.1",
+      "file": "ffmpeg-9.0.1.tar.xz",
+      "url": "https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz",
+      "sha256": "cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635",
+      "bytes": 12036420,
+      "upstreamSha256": null,
+      "targets": [
+        "mac-x86_64"
+      ]
+    },
+    {
+      "component": "FFmpeg",
+      "version": "9.0.2",
+      "file": "ffmpeg-9.0.2.tar.xz",
+      "url": "https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz",
+      "sha256": "8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e",
+      "bytes": 12040788,
+      "upstreamSha256": "8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e",
+      "targets": [
+        "mac-arm64"
+      ]
     }
   ],
   "remaining": [
     "Exact source/build correspondence for external libraries in the Gyan static build",
     "VLC Windows contrib-library source/build correspondence",
-    "Review notices/source materials for the bundled LIBCURL.DLL"
+    "Review notices/source materials for the bundled LIBCURL.DLL",
+    "External-library sources, formula/RPM patches and exact build correspondence for BtbN, Homebrew and RPM Fusion bundles"
+  ],
+  "targets": [
+    "windows-x86_64",
+    "windows-arm64",
+    "mac-x86_64",
+    "mac-arm64",
+    "linux-x86_64",
+    "linux-arm64"
   ]
 }
