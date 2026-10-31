@@ -4,7 +4,7 @@ A free, open-source video player, audio player and image viewer for JetBrains ID
 
 ## Screenshots
 
-Actual Any Player dev.11 running in a clean IntelliJ IDEA 2026.1 sandbox with original demonstration media.
+Actual Any Player running in a clean IntelliJ IDEA 2026.1 sandbox with original demonstration media.
 
 ![Video playback with an inline live source-audio spectrogram](docs/screenshots/video.jpg)
 
@@ -21,11 +21,11 @@ Actual Any Player dev.11 running in a clean IntelliJ IDEA 2026.1 sandbox with or
 
 The same image files are ready for the Marketplace Media gallery; see [capture details and upload steps](docs/screenshots/README.md).
 
-## Local preview
+## Installation
 
-The current tested preview targets **Windows x64, IntelliJ Platform 2026.1 (261)**. Additional platform packages are being prepared. Installer assets are currently kept in a draft release; until publication, build locally using the commands below. Published platform-specific packages will appear in [GitHub Releases](https://github.com/FrostBy/AnyPlayer/releases); the generic Java-only ZIP is not an installation package.
+The current tested release targets **Windows x64, IntelliJ Platform 2026.1 (261)**. Additional platform packages are being prepared. Download the platform-specific installer from [GitHub Releases](https://github.com/FrostBy/AnyPlayer/releases). The generic Java-only ZIP is not an installation package.
 
-Install `build/distributions/AnyPlayer-0.1.0-dev.13-windows-x86_64.zip` through **Settings → Plugins → gear menu → Install Plugin from Disk**, then restart the IDE. Use **Tools → Open Media…** for a direct HTTP(S) URL or local file path, or open a supported file in the project. Explicit local opening also accepts transport streams (`.ts`) and files without a recognized extension; ordinary TypeScript files keep their normal editor.
+Install `AnyPlayer-0.1.0-windows-x86_64.zip` through **Settings → Plugins → gear menu → Install Plugin from Disk**, then restart the IDE. Use **Tools → Open Media…** for a direct HTTP(S) URL or local file path, or open a supported file in the project. Explicit local opening also accepts transport streams (`.ts`) and files without a recognized extension; ordinary TypeScript files keep their normal editor.
 
 - Video/audio: play, pause, seek, speed, volume, audio/subtitle tracks, background playback while coding.
 - Images: fit, zoom, pan and transparency; animated GIF/WebP/APNG also support seeking and frame stepping.

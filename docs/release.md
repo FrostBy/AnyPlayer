@@ -2,7 +2,7 @@
 
 ## Platform-specific archives
 
-JetBrains Marketplace supports separate OS/architecture plugin updates for IDE2026.1+. Each update declares its target through plugin.xml dependencies; the filename alone is insufficient. The current Windows archive has `com.intellij.modules.os.windows` and `com.intellij.modules.arch.x86_64`, and version `0.1.0-dev.13-windows-x86_64`.
+JetBrains Marketplace supports separate OS/architecture plugin updates for IDE2026.1+. Each update declares its target through plugin.xml dependencies; the filename alone is insufficient. The current Windows archive has `com.intellij.modules.os.windows` and `com.intellij.modules.arch.x86_64`, and version `0.1.0-windows-x86_64`.
 
 Upload one platform archive in the initial Plugin file field. Add other prepared/verified platform archives through Upload Update on the same plugin page; Marketplace selects the matching update for each IDE's OS/architecture. Do not upload the generic Java-only ZIP or empty platform variants. A universal archive is not required.
 
@@ -48,4 +48,4 @@ Source: [JetBrains Marketplace listing guidance, Media](https://plugins.jetbrain
 | Tags | Select relevant tags actually offered by Marketplace at publication time; confirm the available list rather than inventing tag names. |
 | Versions/platforms | Match tested IDE build lines and the native archive being uploaded. |
 
-The GitHub URL records the owner's destination. A read-only metadata lookup returned404 through the current GitHub connection; this does not establish whether the repository is absent or private/inaccessible. No repository, commit, push, tag or release has been created by this preparation.
+Source repository: https://github.com/FrostBy/AnyPlayer. The release installer version and archive contents must match its public tag; development build counters are not public release versions.

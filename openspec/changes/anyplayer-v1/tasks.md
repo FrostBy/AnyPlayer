@@ -1,6 +1,6 @@
 ## Current delivery status
 
-Current Windows x64 ZIP: `AnyPlayer-0.1.0-dev.13-windows-x86_64.zip`. Owner-approved smooth graph/Follow and sharp-seek changes pass52 JUnit/SDK and15 native checks with the owner's trailer; Plugin Verifier reports compatibility with IDEA2026.1. Astra C1–C6 remains complete. Four actual dev.11 sandbox screenshots remain in [docs/screenshots](../../../docs/screenshots/README.md). See [validation and limitations](../../../docs/testing.md). Other platforms/products, main-IDE/speaker acceptance and broader performance measurements remain open release gates; unconfirmed runtime hypotheses remain excluded. No GitHub publication has occurred.
+Current Windows x64 release ZIP: `AnyPlayer-0.1.0-windows-x86_64.zip`. Release code passed 52 JUnit/SDK and 15 native checks; the 0.1.0 package was rebuilt and Plugin Verifier reports compatibility with IDEA2026.1. Other platform packages are being prepared and are not claimed as verified. Source: https://github.com/FrostBy/AnyPlayer. See docs/testing.md for validation history.
 
 Dev.7 replaces per-pointer thumbnail decoding with prepared local preview strips and session-only HTTP ranges, fixes the video/still fit mismatch, and implements the owner's approved UX recommendations: compact overflow, buffering/seeking/error status, volume feedback, contextual shortcuts/tooltips, analysis cancellation/resume, Go to time and waveform Follow with manual-pan opt-out.
 
