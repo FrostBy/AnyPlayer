@@ -41,8 +41,7 @@ if [[ "$target" == mac-* ]]; then
     [[ ! -f "$file" ]] || cp "$file" "$stage/licenses/$(basename "$file")"
   done
   hdiutil detach "$work/mount" >/dev/null
-  brew update
-  brew install ffmpeg media-info dylibbundler
+  HOMEBREW_NO_AUTO_UPDATE=1 brew install ffmpeg-full media-info dylibbundler
   python3 - "$target" <<'PY'
 import json,subprocess
 import sys
@@ -52,8 +51,8 @@ for name in ('ffmpeg','mediainfo'):
     f=json.loads(subprocess.check_output(['brew','info','--json=v2',item['formula']]))['formulae'][0]
     if f['versions']['stable'] != item['version']: raise SystemExit('Update/review the native lock before changing '+name)
 PY
-  cp -L "$(brew --prefix)/bin/ffmpeg" "$stage/bin/ffmpeg"
-  cp -L "$(brew --prefix)/bin/ffprobe" "$stage/bin/ffprobe"
+  cp -L "$(brew --prefix ffmpeg-full)/bin/ffmpeg" "$stage/bin/ffmpeg"
+  cp -L "$(brew --prefix ffmpeg-full)/bin/ffprobe" "$stage/bin/ffprobe"
   cp -L "$(brew --prefix)/bin/mediainfo" "$stage/bin/mediainfo"
   mkdir -p "$stage/bin/lib"
   dylibbundler -b -x "$stage/bin/ffmpeg" -x "$stage/bin/ffprobe" -x "$stage/bin/mediainfo" -d "$stage/bin/lib/" -p '@executable_path/lib/'
@@ -62,11 +61,11 @@ PY
     if file "$file" | grep -q 'Mach-O'; then codesign --force --sign - "$file"; codesign --verify --strict "$file"; fi
   done
   brew info --json=v2 --installed > "$stage/licenses/homebrew-inventory.json"
-  for formula in ffmpeg media-info; do
+  for formula in ffmpeg-full media-info; do
     prefix=$(brew --prefix "$formula")
     for file in "$prefix"/COPYING* "$prefix"/LICENSE*; do [[ ! -f "$file" ]] || cp "$file" "$stage/licenses/$formula-$(basename "$file")"; done
   done
-  for file in "$stage/bin/ffmpeg" "$stage/bin/ffprobe" "$stage/bin/mediainfo" "$stage/vlc/lib/libvlc.dylib"; do lipo -verify_arch "$expected" "$file"; done
+  for file in "$stage/bin/ffmpeg" "$stage/bin/ffprobe" "$stage/bin/mediainfo" "$stage/vlc/lib/libvlc.dylib"; do lipo "$file" -verify_arch "$expected"; done
 else
   archive=$(fetch ffmpeg)
   mkdir -p "$work/ffmpeg"
