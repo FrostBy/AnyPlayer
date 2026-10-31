@@ -18,7 +18,7 @@ fetch() {
   local component=$1 url sha kind file
   IFS=$'\t' read -r url sha kind < <(python3 - "$target" "$component" <<'PY'
 import json,sys
-d=json.load(open('native/dependencies.json'))[sys.argv[1]][sys.argv[2]]
+d=json.load(open('native/dependencies.json',encoding='utf-8'))[sys.argv[1]][sys.argv[2]]
 print(d['url'],d['sha256'],d['archive'],sep='\t')
 PY
   )
@@ -45,7 +45,7 @@ if [[ "$target" == mac-* ]]; then
   python3 - "$target" <<'PY'
 import json,subprocess
 import sys
-d=json.load(open('native/dependencies.json'))
+d=json.load(open('native/dependencies.json',encoding='utf-8'))
 for name in ('ffmpeg','mediainfo'):
     item=d[sys.argv[1]][name]
     f=json.loads(subprocess.check_output(['brew','info','--json=v2',item['formula']]))['formulae'][0]
@@ -88,7 +88,7 @@ from pathlib import Path
 r=Path(sys.argv[1]); files=[]
 for p in sorted(r.rglob('*')):
     if p.is_file(): files.append({'path':str(p.relative_to(r)),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size})
-(r/'inventory.json').write_text(json.dumps({'target':sys.argv[2],'files':files},indent=2))
+(r/'inventory.json').write_text(json.dumps({'target':sys.argv[2],'files':files},indent=2),encoding='utf-8')
 PY
 final="$root/native/$target/native"
 backup="$root/native/$target/.previous-native"

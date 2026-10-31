@@ -36,7 +36,7 @@ SDK tests accept `-PmediaFixture=<local video>` for an additional finite, seekab
 
 ## Manual smoke test
 
-Install the matching ZIP through **Settings в†’ Plugins в†’ Install Plugin from Disk** and restart.
+Install the matching ZIP through **Settings > Plugins > Install Plugin from Disk** and restart.
 
 1. Play local video/audio; seek, pause, resume, replay after EOF, change speed/volume and select tracks.
 2. Inspect Live/Full file spectra and Waveform. Mute must leave source analysis intact. Check Follow, zoom and separate channels.

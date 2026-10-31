@@ -755,7 +755,7 @@ class MediaEditorPlatformTest : BasePlatformTestCase() {
     fun testMediaFileTypeAndActionAreRegisteredOnCommonPlatform() {
         assertSame(MediaFileType, FileTypeManager.getInstance().getFileTypeByExtension("mp4"))
         assertTrue(MediaFileType.isBinary)
-        assertNotNull(ActionManager.getInstance().getAction("AnyPlayer.OpenMedia"))
+        assertEquals("Open Media\u2026", ActionManager.getInstance().getAction("AnyPlayer.OpenMedia")?.templatePresentation?.text)
     }
 
     fun testProviderDoesNotReplaceTypeScriptButAcceptsExplicitSources() {

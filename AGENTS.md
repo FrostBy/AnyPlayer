@@ -23,6 +23,8 @@ Use JDK 21+ and the Gradle wrapper. The README documents prerequisites and the i
 
 ## Coding Style & Naming Conventions
 
+Specify UTF-8 explicitly for Python text reads and writes; Windows locale defaults can corrupt Unicode.
+
 Use UTF-8, `.editorconfig`, Kotlin official style and four-space Kotlin indentation. Types use UpperCamelCase; functions/properties use lowerCamelCase. No standalone formatter/linter task is configured. Keep decoding off the EDT, reject obsolete background results and release owned processes. Reuse existing module helpers before adding abstractions.
 
 ## Testing Guidelines

@@ -44,6 +44,6 @@ for owner in sorted(owners):
     for directory in subprocess.run(['rpm','-ql',owner],capture_output=True,text=True).stdout.splitlines():
         if directory.startswith('/usr/share/licenses/') and Path(directory).is_file():
             dst=r/'licenses/rpm'/owner/Path(directory).name; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(directory,dst)
-(r/'licenses/rpm-packages.txt').write_text(subprocess.check_output(['rpm','-qa','--qf','%{NAME} %{VERSION}-%{RELEASE} %{ARCH} %{SOURCERPM}\n'],text=True))
+(r/'licenses/rpm-packages.txt').write_text(subprocess.check_output(['rpm','-qa','--qf','%{NAME} %{VERSION}-%{RELEASE} %{ARCH} %{SOURCERPM}\n'],text=True),encoding='utf-8')
 PY
 for file in "$stage/bin/mediainfo" "$stage/vlc/lib/libvlc.so"; do ldd "$file"; done

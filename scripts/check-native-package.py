@@ -7,6 +7,23 @@ import sys
 import xml.etree.ElementTree as ET
 import zipfile
 
+mojibake = set()
+for character in '\u2192\u2013\u2014\u2026\u2212\u00d7\u2018\u2019\u201c\u201d\u2022\u00a0\u00a9\u22ef\u25b6':
+    for encoding in ('cp1251', 'cp1252', 'latin1'):
+        try:
+            mojibake.add(character.encode('utf-8').decode(encoding))
+        except UnicodeError:
+            pass
+
+text_extensions = {'.md', '.xml', '.kt', '.kts', '.json', '.yaml', '.yml', '.py', '.ps1', '.sh', '.js', '.css', '.html', '.svg', '.properties'}
+source_files = list(Path('.').glob('*'))
+for directory in ('src', 'docs', 'openspec', 'scripts', '.github'):
+    source_files.extend(Path(directory).rglob('*'))
+for path in source_files:
+    if path.is_file() and path.suffix in text_extensions:
+        text = path.read_text(encoding='utf-8-sig')
+        assert not any(marker in text for marker in mojibake), f'Corrupt text encoding: {path}'
+
 target = sys.argv[1]
 os_name, arch = target.split('-', 1)
 archive = Path('build/distributions') / f'AnyPlayer-0.1.0-{target}.zip'
@@ -30,12 +47,15 @@ with zipfile.ZipFile(archive) as package:
             with zipfile.ZipFile(io.BytesIO(package.read(name))) as jar:
                 assert not any(n.startswith('dev/anyplayer/') for n in jar.namelist()), 'Obsolete classes in the package'
                 if 'META-INF/plugin.xml' in jar.namelist():
-                    descriptors.append(ET.fromstring(jar.read('META-INF/plugin.xml')))
+                    xml = jar.read('META-INF/plugin.xml').decode('utf-8')
+                    assert not any(marker in xml for marker in mojibake), 'Corrupt packaged descriptor encoding'
+                    descriptors.append(ET.fromstring(xml))
     descriptor, = descriptors
     assert descriptor.findtext('id') == 'me.romanovsky.anyplayer', 'Unexpected Plugin ID'
     assert descriptor.findtext('name') == 'Any Player', 'Unexpected plugin name'
     assert descriptor.findtext('vendor') == 'Romanovsky', 'Unexpected vendor'
     assert descriptor.findtext('change-notes', '').strip(), 'Missing release notes'
+    assert descriptor.find('actions/action').get('text') == 'Open Media\u2026', 'Corrupt Open Media label'
     for node in descriptor.iter():
         for attribute in ('implementationClass', 'implementation', 'class'):
             if attribute in node.attrib:
@@ -51,5 +71,5 @@ with zipfile.ZipFile(archive) as package:
         if os_name != 'windows' and not member.is_dir():
             os.chmod(path, (member.external_attr >> 16) & 0o777 or 0o644)
 digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-archive.with_suffix('.zip.sha256').write_text(f'{digest}  {archive.name}\n')
+archive.with_suffix('.zip.sha256').write_text(f'{digest}  {archive.name}\n', encoding='utf-8')
 print(f'Checked {archive.name}: {digest}')
