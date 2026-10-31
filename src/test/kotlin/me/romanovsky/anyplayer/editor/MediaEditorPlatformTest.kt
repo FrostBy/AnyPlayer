@@ -146,7 +146,7 @@ class MediaEditorPlatformTest : BasePlatformTestCase() {
             assertEquals(initial, file)
             assertNull(file.getUserData(MediaEditorProvider.SOURCE))
             assertTrue(provider.accept(project, file))
-            assertEquals(input, MediaEditorProvider.source(file).localPath)
+            assertTrue("Explicit opening must preserve the physical file", Files.isSameFile(input, MediaEditorProvider.source(file).localPath))
             val editor = provider.createEditor(project, file)
             try { await("explicit $name playback") { descendants(editor.component).filterIsInstance<JButton>().any { it.accessibleContext.accessibleName == "Play" && it.isEnabled } } }
             finally { Disposer.dispose(editor) }
