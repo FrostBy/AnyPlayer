@@ -6,6 +6,36 @@ The release code passed **53 JUnit/IntelliJ SDK checks and 15 native integration
 
 All six OS/CPU packages passed 15 native integration checks each. See the final [Windows x64 validation](https://github.com/FrostBy/AnyPlayer/actions/runs/41203247548) and the [other five platform jobs](https://github.com/FrostBy/AnyPlayer/actions/runs/41202859683). Each job validates Plugin ID `me.romanovsky.anyplayer`, display name, vendor, class namespace, platform dependencies and executable permissions, then exercises the extracted installation ZIP. Packages, checksums and exact per-platform build provenance are in [release assets](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0).
 
+## Existing archive API compatibility
+
+The unchanged Windows x64 ZIP from [source run 41203247548](https://github.com/FrostBy/AnyPlayer/actions/runs/41203247548) was checked with Plugin Verifier 1.411. All six installers have the same recorded application `.class` tree; class-file major 65 requires Java 21.
+
+```text
+Original ZIP SHA-256: 9cb9810c69af30c797f9de0e4b6cf10618375b42f4c4b27e1457155744da99aa
+Class-tree SHA-256:  971829544e1ab77f347bd2d0407a1fe490803acd4f35da8d433fadc4c080e7f4
+```
+
+Results come from the [eight-version run](https://github.com/FrostBy/AnyPlayer/actions/runs/41206906836) and the [first-2025.2/263-RC boundary run](https://github.com/FrostBy/AnyPlayer/actions/runs/41208031558), which checked two SDKs in parallel on one runner. The API probe uses `-ignore-os-arch`; it is separate from the normal probe.
+
+| IDEA version | Build | API-probe result |
+| --- | --- | --- |
+| 2024.1.7 | 241.19416.15 | 13 compatibility problems, including Java virtual-thread and SDK references |
+| 2024.2.6 | 242.26775.15 | 3 problems: `PluginId.Companion` class/field and the two-argument browse-folder listener |
+| 2024.3.7.1 | 243.28141.41 | 2 problems: `PluginId.Companion` class/field |
+| 2025.1.7.2 | 251.29188.72 | 2 problems: `PluginId.Companion` class/field |
+| 2025.2, first release | 252.23892.409 | Compatible |
+| 2025.2.6.4 | 252.28539.149 | Compatible |
+| 2025.3.6.2 | 253.33813.99 | Compatible |
+| 2026.1.5.1 | 261.27258.136 | Compatible |
+| 2026.2.4 | 262.11879.100 | Compatible; internal API usage: `PluginManagerCore.getPlugin` |
+| 2026.3 RC | 263.7307.112 | Compatible; the same internal API usage and deprecated `FileEditorManager.openFile(VirtualFile, boolean)` |
+
+The first tested API-compatible release is **2025.2**; the latest checked build is **263.7307.112 RC**. These results do not establish untested patches, future versions or native playback on those SDKs. The published archives' `since-build=261` / `until-build=261.*` and native-variant policy remain unchanged.
+
+Normal probes reported two missing OS/architecture modules on every tested SDK, including 261. Those constraint-resolution reports do not establish actual installation or loading success/failure.
+
+[TeamCity 399252](https://intellij-plugins-performance.teamcity.com/buildConfiguration/PluginPlatformTests_ExternalPluginsCheckerTests/399252?guest=1) passed `installPluginTest` and `testTrialWidgetPresence`, but its [idea.log archive](https://intellij-plugins-performance.teamcity.com/guestAuth/app/rest/builds/id:399252/artifacts/content/install-plugin-test/with-plugin/logs-134822.zip) records rejection of the Linux ARM64 plugin on an x86_64 host; that success does not prove plugin loading or media playback on RC.
+
 ## Running checks
 
 Use JDK 21+ and prepare the matching [native runtime](../native/README.md) first:
