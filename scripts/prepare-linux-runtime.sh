@@ -3,17 +3,18 @@ set -euo pipefail
 stage=${1:?staging path required}
 case "$stage" in native/linux-x86_64/.preparing-*|native/linux-arm64/.preparing-*) ;; *) echo 'Unsafe staging path' >&2; exit 1;; esac
 stage="/workspace/$stage"
+trap 'chown -R "$ANYPLAYER_UID:$ANYPLAYER_GID" "$stage"' EXIT
 dnf install -y epel-release dnf-plugins-core
 dnf config-manager --set-enabled powertools
 dnf install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
-dnf install -y vlc-core-3.0.24 mediainfo patchelf python3 file
+dnf install -y vlc-core-3.0.24 mediainfo patchelf python39 file
 mkdir -p "$stage/vlc/lib/vlc" "$stage/licenses/rpm"
 cp -a /usr/lib64/vlc/plugins "$stage/vlc/lib/vlc/"
 cp -L /usr/lib64/libvlc.so.5 "$stage/vlc/lib/libvlc.so"
 cp -L /usr/lib64/libvlccore.so.9 "$stage/vlc/lib/libvlccore.so"
 cp /usr/bin/mediainfo "$stage/bin/mediainfo"
 cp -L /usr/lib64/libcurl.so.4 "$stage/vlc/lib/libcurl.so.4"
-python3 - "$stage" <<'PY'
+python3.9 - "$stage" <<'PY'
 from pathlib import Path
 import shutil,subprocess,sys,json
 r=Path(sys.argv[1]); lib=r/'vlc/lib'

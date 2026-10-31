@@ -72,8 +72,7 @@ else
   tar -xJf "$archive" --strip-components=1 -C "$work/ffmpeg"
   cp "$work/ffmpeg/bin/ffmpeg" "$work/ffmpeg/bin/ffprobe" "$stage/bin/"
   cp "$work/ffmpeg"/LICENSE* "$stage/licenses/" 2>/dev/null || true
-  export ANYPLAYER_STAGE="$stage" ANYPLAYER_TARGET="$target"
-  docker run --rm -e ANYPLAYER_TARGET -v "$root:/workspace" -w /workspace rockylinux/rockylinux:8.10 bash scripts/prepare-linux-runtime.sh "${stage#"$root/"}"
+  docker run --rm -e ANYPLAYER_UID="$(id -u)" -e ANYPLAYER_GID="$(id -g)" -v "$root:/workspace" -w /workspace rockylinux/rockylinux:8.10 bash scripts/prepare-linux-runtime.sh "${stage#"$root/"}"
 fi
 cp native/dependencies.json "$stage/dependencies.json"
 cp THIRD_PARTY_NOTICES.md "$stage/licenses/THIRD_PARTY_NOTICES.md"
