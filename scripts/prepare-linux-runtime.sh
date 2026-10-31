@@ -6,7 +6,7 @@ stage="/workspace/$stage"
 dnf install -y epel-release dnf-plugins-core
 dnf config-manager --set-enabled powertools
 dnf install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
-dnf install -y vlc-core-3.0.24 mediainfo libcurl patchelf python3 file
+dnf install -y vlc-core-3.0.24 mediainfo patchelf python3 file
 mkdir -p "$stage/vlc/lib/vlc" "$stage/licenses/rpm"
 cp -a /usr/lib64/vlc/plugins "$stage/vlc/lib/vlc/"
 cp -L /usr/lib64/libvlc.so.5 "$stage/vlc/lib/libvlc.so"
