@@ -7,6 +7,10 @@ on:
         description: 'JSON array of platform targets'
         default: '["windows-x86_64","windows-arm64","mac-x86_64","mac-arm64","linux-x86_64","linux-arm64"]'
         required: true
+      runtime_release:
+        description: 'Reuse unchanged native binaries from a checked release; blank prepares from upstream'
+        default: ''
+        required: false
 
 permissions:
   contents: read
@@ -28,13 +32,43 @@ jobs:
           java-version: '25'
           architecture: ${{ endsWith(matrix.target, 'arm64') && 'aarch64' || 'x64' }}
       - name: Prepare Windows runtime
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && inputs.runtime_release == ''
         shell: pwsh
         run: ./scripts/prepare-native.ps1 -Target '${{ matrix.target }}'
       - name: Prepare POSIX runtime
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' && inputs.runtime_release == ''
         shell: bash
         run: bash scripts/prepare-posix-native.sh '${{ matrix.target }}'
+      - name: Reuse checked native runtime
+        if: inputs.runtime_release != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUNTIME_RELEASE: ${{ inputs.runtime_release }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          gh release download "$RUNTIME_RELEASE" --pattern "AnyPlayer-0.1.0-$TARGET.zip" --pattern SHA256SUMS.txt --dir build/runtime-reuse
+          python - <<'PY'
+          import hashlib,json,os,shutil,zipfile
+          from pathlib import Path
+          target=os.environ['TARGET']
+          archive=Path('build/runtime-reuse')/f'AnyPlayer-0.1.0-{target}.zip'
+          hashes=dict(line.split(None,1)[::-1] for line in (archive.parent/'SHA256SUMS.txt').read_text().splitlines())
+          assert hashlib.sha256(archive.read_bytes()).hexdigest()==hashes[archive.name]
+          destination=Path('native',target,'native').resolve()
+          assert not destination.exists()
+          with zipfile.ZipFile(archive) as z:
+              assert json.loads(z.read('AnyPlayer/native/dependencies.json'))[target]==json.loads(Path('native/dependencies.json').read_text())[target], 'Native lock differs; prepare from upstream'
+              for entry in z.infolist():
+                  if not entry.filename.startswith('AnyPlayer/native/') or entry.is_dir(): continue
+                  p=(destination/entry.filename.removeprefix('AnyPlayer/native/')).resolve()
+                  assert p.is_relative_to(destination)
+                  p.parent.mkdir(parents=True,exist_ok=True)
+                  with z.open(entry) as source,p.open('wb') as output: shutil.copyfileobj(source,output)
+                  if os.name!='nt': p.chmod((entry.external_attr>>16)&0o777 or 0o644)
+          print('Verified and reused native binaries only:',target)
+          PY
       - name: Install matching ARM64 IntelliJ SDK
         if: matrix.target == 'windows-arm64'
         shell: pwsh
@@ -58,6 +92,10 @@ jobs:
       - name: Validate and extract the installation ZIP
         shell: bash
         run: python scripts/check-native-package.py '${{ matrix.target }}'
+      - name: Check IntelliJ SDK behavior and plugin API
+        if: matrix.target == 'windows-x86_64'
+        shell: pwsh
+        run: ./gradlew.bat --no-daemon test verifyPlugin --console=plain
       - name: Exercise installed Windows runtime
         if: runner.os == 'Windows'
         shell: pwsh
@@ -87,6 +125,9 @@ jobs:
           path: |
             build/reports/tests/nativeTest/
             build/test-results/nativeTest/
+            build/test-results/test/
+            build/reports/tests/test/
+            build/reports/pluginVerifier/
             native/${{ matrix.target }}/native/licenses/
             native/${{ matrix.target }}/native/inventory.json
           if-no-files-found: ignore

@@ -4,7 +4,7 @@
 
 Any Player is a Kotlin/Swing media plugin for JetBrains IDEs.
 
-- `src/main/kotlin/dev/anyplayer/` contains `editor`, `playback`, `media`, `images` and `analysis` modules. Plugin registration, icons and notices are in `src/main/resources/`.
+- `src/main/kotlin/me/romanovsky/anyplayer/` contains `editor`, `playback`, `media`, `images` and `analysis` modules. Plugin registration, icons and notices are in `src/main/resources/`.
 - `src/test/kotlin/` contains JUnit, IntelliJ SDK and native integration checks.
 - `native/dependencies.json` pins runtime origins/hashes; `scripts/prepare-native.ps1` prepares ignored platform bundles.
 - `docs/` holds validation, release instructions and actual sandbox screenshots. `openspec/changes/anyplayer-v1/` records requirements and tasks; `.serena/` is tooling configuration.

@@ -1,5 +1,5 @@
-<idea-plugin require-restart="true">
-    <id>dev.anyplayer</id>
+<idea-plugin require-restart="true" url="https://github.com/FrostBy/AnyPlayer">
+    <id>me.romanovsky.anyplayer</id>
     <name>Any Player</name>
     <vendor url="https://plugins.jetbrains.com/vendor/Romanovsky">Romanovsky</vendor>
     <description><![CDATA[
@@ -13,13 +13,18 @@
             <li>MediaInfo properties and complete reports.</li>
         </ul>
     ]]></description>
+    <change-notes><![CDATA[
+        <p>Initial release: video/audio playback, images and seekable animations, live/full-file
+        spectrograms, interactive waveforms and MediaInfo. Supports local paths and direct HTTP(S)
+        media URLs. Native packages are available for Windows, macOS and Linux on x86_64 and ARM64.</p>
+    ]]></change-notes>
     <depends>com.intellij.modules.platform</depends>
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="AnyPlayer Media" implementationClass="dev.anyplayer.editor.MediaFileType" fieldName="INSTANCE" extensions="mp4;m4v;mkv;mov;webm;avi;wmv;mpeg;mpg;mp3;wav;flac;ogg;opus;aac;m4a;aiff"/>
-        <fileEditorProvider implementation="dev.anyplayer.editor.MediaEditorProvider"/>
+        <fileType name="AnyPlayer Media" implementationClass="me.romanovsky.anyplayer.editor.MediaFileType" fieldName="INSTANCE" extensions="mp4;m4v;mkv;mov;webm;avi;wmv;mpeg;mpg;mp3;wav;flac;ogg;opus;aac;m4a;aiff"/>
+        <fileEditorProvider implementation="me.romanovsky.anyplayer.editor.MediaEditorProvider"/>
     </extensions>
     <actions>
-        <action id="AnyPlayer.OpenMedia" class="dev.anyplayer.editor.OpenMediaAction" text="Open Media…" description="Open a media URL or local path in AnyPlayer">
+        <action id="AnyPlayer.OpenMedia" class="me.romanovsky.anyplayer.editor.OpenMediaAction" text="Open MediaвЂ¦" description="Open a media URL or local path in AnyPlayer">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>

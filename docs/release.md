@@ -29,7 +29,7 @@ Do not run `publishPlugin`: all six variants are configured, and Marketplace pub
 | Field | Value |
 | --- | --- |
 | Name | Any Player |
-| Plugin ID | `dev.anyplayer` |
+| Plugin ID | `me.romanovsky.anyplayer` |
 | Vendor | Romanovsky |
 | Price | Free |
 | License | GNU GPLv3 |

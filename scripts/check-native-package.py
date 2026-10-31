@@ -28,9 +28,18 @@ with zipfile.ZipFile(archive) as package:
     for name in names:
         if name.startswith('AnyPlayer/lib/') and name.endswith('.jar'):
             with zipfile.ZipFile(io.BytesIO(package.read(name))) as jar:
+                assert not any(n.startswith('dev/anyplayer/') for n in jar.namelist()), 'Obsolete classes in the package'
                 if 'META-INF/plugin.xml' in jar.namelist():
                     descriptors.append(ET.fromstring(jar.read('META-INF/plugin.xml')))
     descriptor, = descriptors
+    assert descriptor.findtext('id') == 'me.romanovsky.anyplayer', 'Unexpected Plugin ID'
+    assert descriptor.findtext('name') == 'Any Player', 'Unexpected plugin name'
+    assert descriptor.findtext('vendor') == 'Romanovsky', 'Unexpected vendor'
+    assert descriptor.findtext('change-notes', '').strip(), 'Missing release notes'
+    for node in descriptor.iter():
+        for attribute in ('implementationClass', 'implementation', 'class'):
+            if attribute in node.attrib:
+                assert node.attrib[attribute].startswith('me.romanovsky.anyplayer.'), 'Unexpected extension namespace'
     assert descriptor.findtext('version') == f'0.1.0-{target}'
     dependencies = [node.text for node in descriptor.findall('depends')]
     assert f'com.intellij.modules.os.{os_name}' in dependencies, dependencies

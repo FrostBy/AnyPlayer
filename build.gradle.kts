@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.intellij.platform") version "2.19.0"
 }
 
-group = "dev.anyplayer"
+group = "me.romanovsky.anyplayer"
 version = "0.1.0"
 
 repositories {
