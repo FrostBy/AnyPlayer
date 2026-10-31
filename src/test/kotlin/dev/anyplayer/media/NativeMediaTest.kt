@@ -1,7 +1,6 @@
 package dev.anyplayer.media
 
 import com.google.gson.JsonParser
-import com.sun.jna.NativeLibrary
 import com.sun.net.httpserver.HttpServer
 import dev.anyplayer.analysis.SpectrumSession
 import dev.anyplayer.analysis.WaveformAnalysis
@@ -159,7 +158,7 @@ class NativeMediaTest {
         ToolProcess.capture(tool("ffmpeg"), listOf("-v", "error", "-nostdin", "-f", "lavfi", "-i", "testsrc2=size=160x90:rate=12:duration=4", "-itsoffset", "1", "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=48000:duration=4", "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac", "-output_ts_offset", "5", path.toString()))
         val source = MediaSource.parse(path.toString())
         val info = MediaProbe.inspect(tool("ffprobe"), source)
-        NativeLibrary.addSearchPath("libvlc", root.resolve(if (windows) "vlc" else "vlc/lib").toString())
+        NativeRuntime.loadVlc(root.resolve(if (windows) "vlc" else "vlc/lib"))
         val factory = MediaPlayerFactory(null, listOf("--aout=dummy", "--quiet"))
         lateinit var component: CallbackMediaPlayerComponent
         SwingUtilities.invokeAndWait { component = CallbackMediaPlayerComponent(factory, null, InputEvents.NONE, true, null) }
@@ -235,7 +234,7 @@ class NativeMediaTest {
             } finally { previews.close() }
             val json = ToolProcess.capture(tool("MediaInfo"), listOf("--Output=JSON", source.argument), source).toString(Charsets.UTF_8)
             assertTrue(JsonParser.parseString(json).asJsonObject.has("media"))
-            NativeLibrary.addSearchPath("libvlc", root.resolve(if (windows) "vlc" else "vlc/lib").toString())
+            NativeRuntime.loadVlc(root.resolve(if (windows) "vlc" else "vlc/lib"))
             val factory = MediaPlayerFactory(null, listOf("--aout=dummy", "--vout=dummy", "--quiet"))
             val player = factory.mediaPlayers().newMediaPlayer()
             try { assertTrue(player.media().startPaused(source.argument)); assertTrue(player.status().isSeekable) }
@@ -256,8 +255,7 @@ class NativeMediaTest {
 
     @Test fun `callback video surface renders and playback controls work without system VLC`() {
         val vlc = root.resolve(if (windows) "vlc" else "vlc/lib")
-        NativeLibrary.addSearchPath("libvlc", vlc.toString())
-        NativeLibrary.addSearchPath("libvlccore", vlc.toString())
+        NativeRuntime.loadVlc(vlc)
         val factory = MediaPlayerFactory(null, listOf("--no-video-title-show", "--aout=dummy", "--quiet"))
         val rendered = AtomicInteger()
         val render = object : RenderCallback {

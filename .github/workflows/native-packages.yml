@@ -35,6 +35,21 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: bash scripts/prepare-posix-native.sh '${{ matrix.target }}'
+      - name: Install matching ARM64 IntelliJ SDK
+        if: matrix.target == 'windows-arm64'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $url = 'https://download.jetbrains.com/idea/idea-2026.1-aarch64.exe'
+          New-Item -ItemType Directory -Path build/ide-arm64 -Force | Out-Null
+          Invoke-WebRequest $url -OutFile build/idea-arm64.exe
+          $checksum = ((Invoke-WebRequest "$url.sha256").Content -split '\s+')[0]
+          if ($checksum -notmatch '^[a-fA-F0-9]{64}$' -or (Get-FileHash build/idea-arm64.exe -Algorithm SHA256).Hash -ne $checksum) { throw 'IntelliJ SDK checksum mismatch' }
+          & 7z x build/idea-arm64.exe '-obuild/ide-arm64' -y -bso0 -bsp0
+          if ($LASTEXITCODE -ne 0) { throw 'IntelliJ SDK extraction failed' }
+          $info = Get-ChildItem build/ide-arm64 -Filter product-info.json -File -Recurse | Select-Object -First 1
+          if (-not $info) { throw 'IntelliJ SDK product-info.json missing' }
+          "ORG_GRADLE_PROJECT_localIdePath=$($info.Directory.FullName)" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
       - name: Build platform ZIP
         shell: bash
         env:

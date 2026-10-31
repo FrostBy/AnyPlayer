@@ -15,15 +15,14 @@ object NativeRuntime {
     }
 
     @Synchronized
-    fun loadVlc() {
-        val directory = root.resolve("vlc").let { if (windows) it else it.resolve("lib") }
+    fun loadVlc(directory: Path = root.resolve("vlc").let { if (windows) it else it.resolve("lib") }) {
         val library = directory.resolve(when {
             windows -> "libvlc.dll"
             System.getProperty("os.name").startsWith("Mac", true) -> "libvlc.dylib"
             else -> "libvlc.so"
         })
         check(Files.isRegularFile(library)) { "The packaged media engine is unavailable. Reinstall AnyPlayer for this IDE platform." }
-        NativeLibrary.addSearchPath("libvlc", directory.toString())
-        NativeLibrary.addSearchPath("libvlccore", directory.toString())
+        NativeLibrary.addSearchPath(if (windows) "libvlc" else "vlc", directory.toString())
+        NativeLibrary.addSearchPath(if (windows) "libvlccore" else "vlccore", directory.toString())
     }
 }
