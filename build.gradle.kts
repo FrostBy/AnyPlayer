@@ -81,7 +81,13 @@ tasks.withType<Test>().configureEach {
     systemProperty("jna.nosys", "true")
     systemProperty("jna.noclasspath", "true")
     doFirst {
-        systemProperty("jna.boot.library.path", intellijPlatform.platformPath.resolve("lib/jna/${System.getProperty("os.arch")}").toString())
+        val jnaRoot = intellijPlatform.platformPath.resolve("lib/jna").toFile()
+        val arch = System.getProperty("os.arch")
+        val aliases = if (arch in setOf("aarch64", "arm64")) listOf(arch, "arm64", "aarch64") else listOf(arch, "amd64", "x86_64")
+        val directory = aliases.map(jnaRoot::resolve).firstOrNull { it.isDirectory }
+        check(directory != null) { "No $arch JNA runtime in $jnaRoot; available: ${jnaRoot.list()?.joinToString()}" }
+        logger.lifecycle("Test JNA runtime: $directory ($arch)")
+        systemProperty("jna.boot.library.path", directory.toString())
     }
 }
 tasks.test {
