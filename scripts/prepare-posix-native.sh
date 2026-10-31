@@ -41,6 +41,7 @@ if [[ "$target" == mac-* ]]; then
     [[ ! -f "$file" ]] || cp "$file" "$stage/licenses/$(basename "$file")"
   done
   hdiutil detach "$work/mount" >/dev/null
+  brew update
   brew install ffmpeg media-info dylibbundler
   python3 - "$target" <<'PY'
 import json,subprocess
