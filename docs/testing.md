@@ -4,7 +4,7 @@
 
 The release code passed **52 JUnit/IntelliJ SDK checks and 15 native integration checks** on Windows x64. Plugin Verifier reports **Compatible** with IntelliJ IDEA 2026.1, build `IU-261.22158.277`. The owner accepted playback and analysis behavior. Real sandbox screenshots are in [screenshots/](screenshots/README.md).
 
-The [Native packages workflow](../.github/workflows/native-packages.yml) checks each OS/CPU separately. It builds the platform ZIP, validates its descriptor and executable permissions, extracts it, then runs native integration tests against that installation. Windows x64 has also passed all 15 checks in this workflow. Other targets are undergoing validation; consult the workflow and [release assets](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0) for completed packages.
+All six OS/CPU packages passed 15 native integration checks each. Windows x64 passed locally and in CI; the five additional targets passed on matching native runners in [this workflow run](https://github.com/FrostBy/AnyPlayer/actions/runs/41199751436). The workflow builds each ZIP, validates its descriptor and executable permissions, extracts it, then tests that installation. Packages and checksums are in [release assets](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0).
 
 ## Running checks
 

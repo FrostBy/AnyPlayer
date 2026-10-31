@@ -18,7 +18,7 @@
 
 ## 2. Release work in progress
 
-- [ ] 2.1 Complete native loading and media tests for Windows ARM64 and both macOS/Linux architectures; attach successful ZIPs to the same release.
+- [x] 2.1 Complete native loading and media tests for Windows ARM64 and both macOS/Linux architectures; attach successful ZIPs to the same release.
 - [ ] 2.2 Record per-platform dependency/build inventories and finish exact corresponding-source coverage for bundled external libraries.
 - [ ] 2.3 Verify clean-machine installation and supported OS/libc baselines for every advertised target.
 - [ ] 2.4 Validate other advertised IntelliJ Platform IDEs, including PyCharm, WebStorm, GoLand, CLion and Rider.

@@ -8,7 +8,7 @@ Use one GitHub release with separate installation ZIPs for Windows, macOS and Li
 
 Run the manually dispatched [Native packages workflow](../.github/workflows/native-packages.yml). Successful jobs provide a ZIP, SHA-256 and separate diagnostics. The workflow validates the installed archive on its matching native runner; it does not publish releases or Marketplace updates.
 
-Keep the public version, Git tag, release title and archive version consistent. Packaging fixes may use a later build commit without moving the published tag; record that commit alongside the affected packages and supply the packaging sources.
+Keep the public version, release title and archive version consistent. Record exact source/build commits in `BUILD-INFO.json` when platform builds follow the initial release tag, and supply their matching source archive. Do not silently move a published tag.
 
 ## GitHub release checklist
 
