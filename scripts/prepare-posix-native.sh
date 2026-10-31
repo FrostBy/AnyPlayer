@@ -54,6 +54,7 @@ PY
   cp -L "$(brew --prefix)/bin/ffmpeg" "$stage/bin/ffmpeg"
   cp -L "$(brew --prefix)/bin/ffprobe" "$stage/bin/ffprobe"
   cp -L "$(brew --prefix)/bin/mediainfo" "$stage/bin/mediainfo"
+  mkdir -p "$stage/bin/lib"
   dylibbundler -b -x "$stage/bin/ffmpeg" -x "$stage/bin/ffprobe" -x "$stage/bin/mediainfo" -d "$stage/bin/lib/" -p '@executable_path/lib/'
   python3 scripts/relocate-macos-vlc.py "$stage/vlc"
   find "$stage/bin" -type f | while IFS= read -r file; do
