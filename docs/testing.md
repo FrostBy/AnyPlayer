@@ -4,7 +4,7 @@
 
 The release code passed **53 JUnit/IntelliJ SDK checks and 15 native integration checks** on Windows x64. Plugin Verifier reports **Compatible** with IntelliJ IDEA 2026.1, build `IU-261.22158.277`. Real sandbox screenshots are in [screenshots/](screenshots/README.md).
 
-All six OS/CPU packages passed 15 native integration checks each. Windows x64 passed locally and in CI; the five additional targets passed on matching native runners in [this workflow run](https://github.com/FrostBy/AnyPlayer/actions/runs/41199751436). The workflow builds each ZIP, validates its descriptor and executable permissions, extracts it, then tests that installation. Packages and checksums are in [release assets](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0).
+All six OS/CPU packages passed 15 native integration checks each. See the final [Windows x64 validation](https://github.com/FrostBy/AnyPlayer/actions/runs/41203247548) and the [other five platform jobs](https://github.com/FrostBy/AnyPlayer/actions/runs/41202859683). Each job validates Plugin ID `me.romanovsky.anyplayer`, display name, vendor, class namespace, platform dependencies and executable permissions, then exercises the extracted installation ZIP. Packages, checksums and exact per-platform build provenance are in [release assets](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0).
 
 ## Running checks
 
@@ -36,7 +36,7 @@ SDK tests accept `-PmediaFixture=<local video>` for an additional finite, seekab
 
 ## Manual smoke test
 
-Install the matching ZIP through **Settings → Plugins → Install Plugin from Disk** and restart.
+Install the matching ZIP through **Settings в†’ Plugins в†’ Install Plugin from Disk** and restart.
 
 1. Play local video/audio; seek, pause, resume, replay after EOF, change speed/volume and select tracks.
 2. Inspect Live/Full file spectra and Waveform. Mute must leave source analysis intact. Check Follow, zoom and separate channels.
