@@ -52,7 +52,7 @@ intellijPlatform {
         name = "Any Player"
         ideaVersion {
             sinceBuild = "261"
-            untilBuild = "261.*"
+            untilBuild = provider { null }
         }
     }
     nativeVariants {

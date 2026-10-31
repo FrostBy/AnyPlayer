@@ -61,6 +61,10 @@ with zipfile.ZipFile(archive) as package:
             if attribute in node.attrib:
                 assert node.attrib[attribute].startswith('me.romanovsky.anyplayer.'), 'Unexpected extension namespace'
     assert descriptor.findtext('version') == f'0.1.0-{target}'
+    compatibility = descriptor.find('idea-version')
+    assert compatibility is not None and compatibility.get('since-build') == '261', 'Unexpected minimum IDE build'
+    assert compatibility.get('until-build') is None, 'Artificial maximum IDE build in the package'
+    assert compatibility.get('strict-until-build') is None, 'Unexpected strict maximum IDE build'
     dependencies = [node.text for node in descriptor.findall('depends')]
     assert f'com.intellij.modules.os.{os_name}' in dependencies, dependencies
     assert f'com.intellij.modules.arch.{arch}' in dependencies, dependencies

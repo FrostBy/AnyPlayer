@@ -1,7 +1,11 @@
 ## ADDED Requirements
 
 ### Requirement: Cover the officially supported IDEA desktop platforms
-Every declared compatible IDEA release SHALL support the same official desktop OS/CPU combinations as that IDEA release. The initial release policy SHALL cover Windows, macOS, and Linux on x86_64 and arm64 for verified IDEA releases starting with 2026.1. Compatibility claims SHALL be tied to completed checks, not presumed future releases.
+Every declared compatible IDEA release SHALL support the same official desktop OS/CPU combinations as that IDEA release. The initial release policy SHALL cover Windows, macOS, and Linux on x86_64 and arm64 starting with 2026.1. The descriptor SHALL NOT impose an upper IDE build limit merely because that build was used for compilation. Declared eligibility and verified coverage SHALL be documented separately; untested future versions SHALL NOT be described as tested.
+
+#### Scenario: A newer IDE is eligible for the existing distribution
+- **WHEN** a newer IDE satisfies the minimum build and platform dependencies
+- **THEN** the descriptor does not reject it through an artificial upper-build attribute, and documentation identifies the exact SDKs checked with Plugin Verifier
 
 #### Scenario: Install on a supported ARM64 IDEA
 - **WHEN** Any Player is installed into an officially supported ARM64 IDEA distribution

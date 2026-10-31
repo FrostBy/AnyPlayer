@@ -17,7 +17,7 @@ A free, open-source video player, audio player and image viewer for JetBrains ID
 
 ## Installation
 
-Download a matching ZIP from [Any Player 0.1.0](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0). The plugin targets **IntelliJ Platform 2026.1 (261)**. Plugin ID: `me.romanovsky.anyplayer`.
+Download a matching ZIP from [Any Player 0.1.0](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0). Minimum IDE: **IntelliJ Platform 2026.1 (261)**. The packages do not impose an upper IDE build limit; verified versions are recorded in [testing.md](docs/testing.md). Plugin ID: `me.romanovsky.anyplayer`.
 
 | Operating system | Available architectures |
 | --- | --- |

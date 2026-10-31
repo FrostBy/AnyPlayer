@@ -30,7 +30,7 @@ Results come from the [eight-version run](https://github.com/FrostBy/AnyPlayer/a
 | 2026.2.4 | 262.11879.100 | Compatible; internal API usage: `PluginManagerCore.getPlugin` |
 | 2026.3 RC | 263.7307.112 | Compatible; the same internal API usage and deprecated `FileEditorManager.openFile(VirtualFile, boolean)` |
 
-The first tested API-compatible release is **2025.2**; the latest checked build is **263.7307.112 RC**. These results do not establish untested patches, future versions or native playback on those SDKs. The published archives' `since-build=261` / `until-build=261.*` and native-variant policy remain unchanged.
+The first tested API-compatible release is **2025.2**; the latest checked build is **263.7307.112 RC**. These results do not establish untested patches, future versions or native playback on those SDKs. The original archive used `since-build=261` / `until-build=261.*`. The compatibility rebuild preserves the tested application bytecode and native payload but declares only `since-build=261`, without either upper-build attribute. The native-variant minimum remains 261.
 
 Normal probes reported two missing OS/architecture modules on every tested SDK, including 261. Those constraint-resolution reports do not establish actual installation or loading success/failure.
 

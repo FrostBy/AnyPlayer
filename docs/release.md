@@ -14,7 +14,7 @@ Keep the public version, release title and archive version consistent. Record ex
 
 1. Run the checks in [testing.md](testing.md), including Plugin Verifier for the declared IDE line and native tests for each attached platform.
 2. Inspect `plugin.xml`, native tools/libraries, executable permissions, icons, licenses and the absence of duplicate JNA jars.
-   Verify Plugin ID `me.romanovsky.anyplayer`, display name `Any Player`, vendor `Romanovsky` and extension class namespaces inside every packaged JAR.
+   Verify Plugin ID `me.romanovsky.anyplayer`, display name `Any Player`, vendor `Romanovsky` and extension class namespaces inside every packaged JAR. Verify `since-build="261"` and absence of both upper-build attributes; do not restore a ceiling based only on the compilation SDK.
 3. Attach the platform ZIPs, project sources, dependency source materials and `SHA256SUMS.txt` to the approved release/tag.
 4. Write concise release notes describing shipped behavior, completed platform checks and concrete remaining limits.
 5. Preserve dependency notices and exact source/build inventories. The collected core-source bundle is incomplete for some external libraries; see [third-party notices](../THIRD_PARTY_NOTICES.md).
