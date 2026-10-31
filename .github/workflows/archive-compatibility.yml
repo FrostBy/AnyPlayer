@@ -2,6 +2,12 @@ name: Existing archive compatibility
 
 on:
   workflow_dispatch:
+    inputs:
+      versions:
+        description: 'JSON array of IDE versions'
+        type: string
+        default: '["2024.1.7","2024.2.6","2024.3.7.1","2025.1.7.2","2025.2.6.4","2025.3.6.2","2026.1.5.1","2026.2.4"]'
+        required: true
 
 permissions:
   contents: read
@@ -15,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ide: ['2024.1.7', '2024.2.6', '2024.3.7.1', '2025.1.7.2', '2025.2.6.4', '2025.3.6.2', '2026.1.5.1', '2026.2.4']
+        ide: ${{ fromJSON(inputs.versions) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad
