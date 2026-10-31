@@ -15,13 +15,9 @@ permissions:
 
 jobs:
   probe:
-    name: IDEA ${{ matrix.ide }}
+    name: Existing archive against selected IDEs
     runs-on: windows-2025
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        ide: ${{ fromJSON(inputs.versions) }}
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad
@@ -29,38 +25,18 @@ jobs:
           distribution: zulu
           java-version: '25'
           architecture: x64
-      - name: Download immutable original plugin archive
+      - name: Download original plugin and verifier once
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           $ErrorActionPreference = 'Stop'
+          $utf8 = [Text.UTF8Encoding]::new($false)
           gh run download 41203247548 --name AnyPlayer-windows-x86_64 --dir input
           if ($LASTEXITCODE -ne 0) { throw 'Original artifact download failed' }
           $hash = (Get-FileHash input/AnyPlayer-0.1.0-windows-x86_64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
           if ($hash -ne '9cb9810c69af30c797f9de0e4b6cf10618375b42f4c4b27e1457155744da99aa') { throw 'Original plugin archive checksum mismatch' }
-      - name: Download target IDE and run both verifier probes
-        shell: pwsh
-        env:
-          IDE_VERSION: ${{ matrix.ide }}
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $utf8 = [Text.UTF8Encoding]::new($false)
-          $releaseData = Invoke-RestMethod "https://data.services.jetbrains.com/products/releases?code=IIU&type=release&version=$env:IDE_VERSION"
-          $release = $releaseData.IIU | Where-Object version -eq $env:IDE_VERSION | Select-Object -First 1
-          if (-not $release -or -not $release.downloads.windowsZip.link -or -not $release.downloads.windowsZip.checksumLink) { throw 'Matching official Windows IDE ZIP not found' }
-          Invoke-WebRequest $release.downloads.windowsZip.link -OutFile ide.zip -TimeoutSec 900
-          Invoke-WebRequest $release.downloads.windowsZip.checksumLink -OutFile ide.sha256 -TimeoutSec 120
-          $expected = ((Get-Content ide.sha256 -Raw -Encoding utf8) -split '\s+')[0].ToLowerInvariant()
-          if ($expected -notmatch '^[a-f0-9]{64}$' -or (Get-FileHash ide.zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Official IDE checksum mismatch' }
-          & 7z x ide.zip '-oide' -y -bso0 -bsp0
-          if ($LASTEXITCODE -ne 0) { throw 'IDE extraction failed' }
-          $info = Get-ChildItem ide -Filter product-info.json -File -Recurse | Sort-Object { $_.FullName.Length } | Select-Object -First 1
-          if (-not $info) { throw 'IDE product-info.json missing' }
-          $ideRoot = $info.Directory.FullName
-          $jbr = Join-Path $ideRoot 'jbr'
-          if (-not (Test-Path (Join-Path $jbr 'bin/java.exe') -PathType Leaf)) { throw 'Target IDE bundled runtime missing' }
           $verifierUrl = 'https://packages.jetbrains.team/maven/p/intellij-plugin-verifier/intellij-plugin-verifier/org/jetbrains/intellij/plugins/verifier-cli/1.411/verifier-cli-1.411-all.jar'
           try { Invoke-WebRequest $verifierUrl -OutFile verifier.jar -TimeoutSec 300 }
           catch {
@@ -71,63 +47,138 @@ jobs:
           $verifierHash = (Get-FileHash verifier.jar -Algorithm SHA256).Hash.ToLowerInvariant()
           if ($verifierHash -ne 'd6cc1c1f17761bb5efff187f98b63fb792c7ef2a2fb9202bb5dbea05ebc02bfa') { throw 'Verifier checksum mismatch' }
           New-Item -ItemType Directory -Path reports -Force | Out-Null
+          $tooling = @{ verifierDownload = $verifierUrl; verifierSha256 = $verifierHash; pluginSha256 = $hash }
+          [IO.File]::WriteAllText((Join-Path $PWD 'reports/tooling.json'), ($tooling | ConvertTo-Json), $utf8)
+      - name: Probe selected SDKs with isolated caches
+        shell: pwsh
+        env:
+          IDE_VERSIONS: ${{ inputs.versions }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $versions = @($env:IDE_VERSIONS | ConvertFrom-Json)
+          if ($versions.Count -eq 0) { throw 'At least one IDE version is required' }
+          foreach ($version in $versions) {
+            if ($version -isnot [string] -or $version -notmatch '^\d{4}\.\d+(?:\.\d+)*$') { throw 'Invalid IDE version' }
+          }
+          if (@($versions | Select-Object -Unique).Count -ne $versions.Count) { throw 'Duplicate IDE versions are not allowed' }
+          $workspace = [IO.Path]::GetFullPath($env:GITHUB_WORKSPACE)
+          $workingRoot = [IO.Path]::GetFullPath((Join-Path $workspace '.compatibility-work'))
+          $workspacePrefix = $workspace.TrimEnd('\') + '\'
+          if (-not $workingRoot.StartsWith($workspacePrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'Unsafe working root' }
+          New-Item -ItemType Directory -Path $workingRoot -Force | Out-Null
           $plugin = (Resolve-Path input/AnyPlayer-0.1.0-windows-x86_64.zip).Path
           $verifier = (Resolve-Path verifier.jar).Path
-          $metadata = [ordered]@{
-            ideVersion = $env:IDE_VERSION
-            ideBuild = $release.build
-            ideDownload = $release.downloads.windowsZip.link
-            ideSha256 = $expected
-            targetRuntime = $jbr
-            pluginSourceRun = 41203247548
-            pluginSha256 = '9cb9810c69af30c797f9de0e4b6cf10618375b42f4c4b27e1457155744da99aa'
-            verifierVersion = '1.411'
-            verifierDownload = $verifierUrl
-            verifierSha256 = $verifierHash
-            normalExitCode = $null
-            apiProbeExitCode = $null
-            meaning = 'Inspect verdict/problem files; exit 0 is not proof of compatibility. API probe ignores OS/architecture modules and is not an installation test.'
-          }
-          function Save-Metadata {
-            [IO.File]::WriteAllText((Join-Path $PWD 'reports/metadata.json'), ($metadata | ConvertTo-Json -Depth 6), $utf8)
-          }
-          function Invoke-Probe([string]$name, [bool]$ignorePlatform) {
-            $reportDirectory = Join-Path $PWD "reports/$name"
-            New-Item -ItemType Directory -Path $reportDirectory -Force | Out-Null
-            $arguments = @('-Dfile.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8', '-jar', $verifier, 'check-plugin', $plugin, $ideRoot, '-runtime-dir', $jbr, '-verification-reports-dir', $reportDirectory)
-            if ($ignorePlatform) { $arguments += '-ignore-os-arch' }
-            $start = [Diagnostics.ProcessStartInfo]::new()
-            $start.FileName = Join-Path $env:JAVA_HOME 'bin/java.exe'
-            $start.UseShellExecute = $false
-            $start.CreateNoWindow = $true
-            $start.RedirectStandardOutput = $true
-            $start.RedirectStandardError = $true
-            $start.StandardOutputEncoding = $utf8
-            $start.StandardErrorEncoding = $utf8
-            foreach ($argument in $arguments) { $start.ArgumentList.Add($argument) }
-            $process = [Diagnostics.Process]::new()
-            $process.StartInfo = $start
-            if (-not $process.Start()) { throw "Cannot start $name verifier probe" }
-            $stdout = $process.StandardOutput.ReadToEndAsync()
-            $stderr = $process.StandardError.ReadToEndAsync()
-            $process.WaitForExit()
-            [IO.File]::WriteAllText((Join-Path $reportDirectory 'stdout.log'), $stdout.GetAwaiter().GetResult(), $utf8)
-            [IO.File]::WriteAllText((Join-Path $reportDirectory 'stderr.log'), $stderr.GetAwaiter().GetResult(), $utf8)
-            $exitCode = $process.ExitCode
-            $process.Dispose()
-            return $exitCode
-          }
-          Save-Metadata
-          # Negative controls and verifier failures remain evidence rather than a compatibility verdict.
-          $metadata.normalExitCode = Invoke-Probe 'normal' $false
-          Save-Metadata
-          $metadata.apiProbeExitCode = Invoke-Probe 'api' $true
-          Save-Metadata
+          $java = Join-Path $env:JAVA_HOME 'bin/java.exe'
+          $tooling = Get-Content reports/tooling.json -Raw -Encoding utf8 | ConvertFrom-Json
+          $results = @($versions | ForEach-Object -Parallel {
+            $ErrorActionPreference = 'Stop'
+            $utf8 = [Text.UTF8Encoding]::new($false)
+            $version = [string]$_
+            $allowedRoot = [IO.Path]::GetFullPath($using:workingRoot)
+            $versionWork = [IO.Path]::GetFullPath((Join-Path $allowedRoot $version))
+            $allowedPrefix = $allowedRoot.TrimEnd('\') + '\'
+            if (-not $versionWork.StartsWith($allowedPrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'Unsafe per-version working path' }
+            $reports = Join-Path $using:workspace "reports/$version"
+            New-Item -ItemType Directory -Path $reports -Force | Out-Null
+            $cache = Join-Path $versionWork 'verifier-home'
+            $metadata = [ordered]@{
+              ideVersion = $version
+              pluginSourceRun = 41203247548
+              pluginSha256 = $using:tooling.pluginSha256
+              verifierVersion = '1.411'
+              verifierDownload = $using:tooling.verifierDownload
+              verifierSha256 = $using:tooling.verifierSha256
+              normalExitCode = $null
+              apiProbeExitCode = $null
+              executionError = $null
+              cleanupError = $null
+              meaning = 'Inspect verdict/problem files; exit 0 is not proof of compatibility. API probe ignores OS/architecture modules and is not an installation test.'
+            }
+            function Save-Metadata {
+              [IO.File]::WriteAllText((Join-Path $reports 'metadata.json'), ($metadata | ConvertTo-Json -Depth 6), $utf8)
+            }
+            function Remove-WorkPath([string]$path) {
+              $absolute = [IO.Path]::GetFullPath($path)
+              if ($absolute -ne $versionWork -and -not $absolute.StartsWith($versionWork + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Cleanup target escapes the version workspace' }
+              if (Test-Path -LiteralPath $absolute) {
+                $resolved = (Resolve-Path -LiteralPath $absolute).ProviderPath
+                if (-not $resolved.StartsWith($allowedPrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'Resolved cleanup target escapes the working root' }
+                Remove-Item -LiteralPath $absolute -Recurse -Force
+              }
+            }
+            function Invoke-Probe([string]$name, [bool]$ignorePlatform) {
+              $reportDirectory = Join-Path $reports $name
+              New-Item -ItemType Directory -Path $reportDirectory -Force | Out-Null
+              $arguments = @('-Dfile.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8', "-Dplugin.verifier.home.dir=$cache", '-jar', $using:verifier, 'check-plugin', $using:plugin, $ideRoot, '-runtime-dir', $jbr, '-verification-reports-dir', $reportDirectory)
+              if ($ignorePlatform) { $arguments += '-ignore-os-arch' }
+              $start = [Diagnostics.ProcessStartInfo]::new()
+              $start.FileName = $using:java
+              $start.UseShellExecute = $false
+              $start.CreateNoWindow = $true
+              $start.RedirectStandardOutput = $true
+              $start.RedirectStandardError = $true
+              $start.StandardOutputEncoding = $utf8
+              $start.StandardErrorEncoding = $utf8
+              foreach ($argument in $arguments) { $start.ArgumentList.Add($argument) }
+              $process = [Diagnostics.Process]::new()
+              $process.StartInfo = $start
+              if (-not $process.Start()) { throw "Cannot start $name verifier probe" }
+              $stdout = $process.StandardOutput.ReadToEndAsync()
+              $stderr = $process.StandardError.ReadToEndAsync()
+              $process.WaitForExit()
+              [IO.File]::WriteAllText((Join-Path $reportDirectory 'stdout.log'), $stdout.GetAwaiter().GetResult(), $utf8)
+              [IO.File]::WriteAllText((Join-Path $reportDirectory 'stderr.log'), $stderr.GetAwaiter().GetResult(), $utf8)
+              $exitCode = $process.ExitCode
+              $process.Dispose()
+              return $exitCode
+            }
+            try {
+              Save-Metadata
+              New-Item -ItemType Directory -Path $versionWork -Force | Out-Null
+              $releaseData = Invoke-RestMethod "https://data.services.jetbrains.com/products/releases?code=IIU&type=release&version=$version"
+              $release = $releaseData.IIU | Where-Object version -eq $version | Select-Object -First 1
+              if (-not $release -or -not $release.downloads.windowsZip.link -or -not $release.downloads.windowsZip.checksumLink) { throw 'Matching official Windows IDE ZIP not found' }
+              $metadata.ideBuild = $release.build
+              $metadata.ideDownload = $release.downloads.windowsZip.link
+              $zip = Join-Path $versionWork 'ide.zip'
+              $checksum = Join-Path $versionWork 'ide.sha256'
+              Invoke-WebRequest $release.downloads.windowsZip.link -OutFile $zip -TimeoutSec 900
+              Invoke-WebRequest $release.downloads.windowsZip.checksumLink -OutFile $checksum -TimeoutSec 120
+              $expected = ((Get-Content -LiteralPath $checksum -Raw -Encoding utf8) -split '\s+')[0].ToLowerInvariant()
+              if ($expected -notmatch '^[a-f0-9]{64}$' -or (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Official IDE checksum mismatch' }
+              $metadata.ideSha256 = $expected
+              $ideDirectory = Join-Path $versionWork 'ide'
+              & 7z x $zip "-o$ideDirectory" -y -bso0 -bsp0
+              if ($LASTEXITCODE -ne 0) { throw 'IDE extraction failed' }
+              Remove-WorkPath $zip
+              Remove-WorkPath $checksum
+              $info = Get-ChildItem -LiteralPath $ideDirectory -Filter product-info.json -File -Recurse | Sort-Object { $_.FullName.Length } | Select-Object -First 1
+              if (-not $info) { throw 'IDE product-info.json missing' }
+              $ideRoot = $info.Directory.FullName
+              $jbr = Join-Path $ideRoot 'jbr'
+              if (-not (Test-Path -LiteralPath (Join-Path $jbr 'bin/java.exe') -PathType Leaf)) { throw 'Target IDE bundled runtime missing' }
+              $metadata.targetRuntime = $jbr
+              Save-Metadata
+              # Exit codes remain evidence, including expected failures on older SDKs.
+              $metadata.normalExitCode = Invoke-Probe 'normal' $false
+              Save-Metadata
+              $metadata.apiProbeExitCode = Invoke-Probe 'api' $true
+            } catch {
+              $metadata.executionError = $_.Exception.Message
+            } finally {
+              try { Remove-WorkPath $versionWork }
+              catch { $metadata.cleanupError = $_.Exception.Message }
+              Save-Metadata
+            }
+            Write-Host "IDE $version probes finished; normal=$($metadata.normalExitCode), api=$($metadata.apiProbeExitCode)"
+            [pscustomobject]@{ version = $version; executionError = $metadata.executionError; cleanupError = $metadata.cleanupError }
+          } -ThrottleLimit 2)
+          if (@($results | Where-Object { $_.executionError -or $_.cleanupError }).Count -gt 0) { throw 'One or more SDK probes failed to execute or clean up; inspect per-version metadata.json' }
       - name: Upload reports without IDE binaries
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: compatibility-${{ matrix.ide }}
+          name: compatibility-reports
           path: reports/
           if-no-files-found: warn
           retention-days: 7
