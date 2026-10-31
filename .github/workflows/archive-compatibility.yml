@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       versions:
-        description: 'JSON array of IDE versions'
+        description: 'JSON array of IDE versions or build numbers'
         type: string
         default: '["2024.1.7","2024.2.6","2024.3.7.1","2025.1.7.2","2025.2.6.4","2025.3.6.2","2026.1.5.1","2026.2.4"]'
         required: true
@@ -58,7 +58,7 @@ jobs:
           $versions = @($env:IDE_VERSIONS | ConvertFrom-Json)
           if ($versions.Count -eq 0) { throw 'At least one IDE version is required' }
           foreach ($version in $versions) {
-            if ($version -isnot [string] -or $version -notmatch '^\d{4}\.\d+(?:\.\d+)*$') { throw 'Invalid IDE version' }
+            if ($version -isnot [string] -or $version -notmatch '^\d{3,4}\.\d+(?:\.\d+)*$') { throw 'Invalid IDE version or build number' }
           }
           if (@($versions | Select-Object -Unique).Count -ne $versions.Count) { throw 'Duplicate IDE versions are not allowed' }
           $workspace = [IO.Path]::GetFullPath($env:GITHUB_WORKSPACE)
@@ -82,7 +82,9 @@ jobs:
             New-Item -ItemType Directory -Path $reports -Force | Out-Null
             $cache = Join-Path $versionWork 'verifier-home'
             $metadata = [ordered]@{
-              ideVersion = $version
+              requestedIdentifier = $version
+              ideVersion = $null
+              ideType = $null
               pluginSourceRun = 41203247548
               pluginSha256 = $using:tooling.pluginSha256
               verifierVersion = '1.411'
@@ -135,9 +137,11 @@ jobs:
             try {
               Save-Metadata
               New-Item -ItemType Directory -Path $versionWork -Force | Out-Null
-              $releaseData = Invoke-RestMethod "https://data.services.jetbrains.com/products/releases?code=IIU&type=release&version=$version"
-              $release = $releaseData.IIU | Where-Object version -eq $version | Select-Object -First 1
+              $releaseData = Invoke-RestMethod 'https://data.services.jetbrains.com/products/releases?code=IIU&type=release,eap,rc,beta'
+              $release = $releaseData.IIU | Where-Object { $_.version -eq $version -or $_.build -eq $version } | Select-Object -First 1
               if (-not $release -or -not $release.downloads.windowsZip.link -or -not $release.downloads.windowsZip.checksumLink) { throw 'Matching official Windows IDE ZIP not found' }
+              $metadata.ideVersion = $release.version
+              $metadata.ideType = $release.type
               $metadata.ideBuild = $release.build
               $metadata.ideDownload = $release.downloads.windowsZip.link
               $zip = Join-Path $versionWork 'ide.zip'
