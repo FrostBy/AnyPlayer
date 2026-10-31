@@ -1,6 +1,6 @@
 # Any Player visual direction
 
-Status: interactive design study and implementation contract, not a running IDEA plugin. Open [index.html](index.html) directly in a browser; there is no build, server, or package installation. Reference images need internet access; editor mockups are local and self-contained.
+This directory contains interactive browser mockups and visual references. For the installed plugin, see the [real IDE screenshots](../screenshots/README.md). Open [index.html](index.html) directly in a browser; no build or server is required. Reference images need internet access; editor mockups are local and self-contained.
 
 ## Design intent
 
@@ -75,4 +75,4 @@ References: YouTube's [precise seeking help](https://support.google.com/youtube/
 
 The browser self-check is [preview.check.js](preview.check.js). It exercises view changes, range selection, seek, play/pause, image controls, failure recovery, audio-free video, theme/split states, focus scoping and moodboard loading. It does not execute native tools or test real decoding. See [validation.md](validation.md) for measured browser checks and captured layouts.
 
-The normative behavior is in [the OpenSpec change](../../openspec/changes/anyplayer-v1/proposal.md). Some behavior, including background playback ownership and native disposal, requires the later IDEA prototype and is not simulated fully by this browser study.
+The normative behavior is in [the OpenSpec change](../../openspec/changes/anyplayer-v1/proposal.md). Native plugin checks are recorded in [testing.md](../testing.md); this browser study does not simulate playback ownership or native disposal fully.

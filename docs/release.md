@@ -1,51 +1,43 @@
-# Owner-managed release
+# Releasing Any Player
 
-## Platform-specific archives
+Source: [FrostBy/AnyPlayer](https://github.com/FrostBy/AnyPlayer). Current release: [0.1.0](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0).
 
-JetBrains Marketplace supports separate OS/architecture plugin updates for IDE2026.1+. Each update declares its target through plugin.xml dependencies; the filename alone is insufficient. The current Windows archive has `com.intellij.modules.os.windows` and `com.intellij.modules.arch.x86_64`, and version `0.1.0-windows-x86_64`.
+## Platform packages
 
-Upload one platform archive in the initial Plugin file field. Add other prepared/verified platform archives through Upload Update on the same plugin page; Marketplace selects the matching update for each IDE's OS/architecture. Do not upload the generic Java-only ZIP or empty platform variants. A universal archive is not required.
+Use one GitHub release with separate installation ZIPs for Windows, macOS and Linux, each on x86_64 and ARM64. Only attach packages that passed their target's native checks. Do not distribute the generic Java-only ZIP as an installer.
 
-The Gradle configuration already uses nativeVariants2.19.0. Only Windowsx64 is presently prepared and tested; do not run publishPlugin while the other five configured variants are empty. Marketplace publication remains manual by the owner.
+Run the manually dispatched [Native packages workflow](../.github/workflows/native-packages.yml). Successful jobs provide a ZIP, SHA-256 and separate diagnostics. The workflow validates the installed archive on its matching native runner; it does not publish releases or Marketplace updates.
 
-Source: [official OS/architecture-specific version guidance](https://plugins.jetbrains.com/docs/marketplace/os-architecture-specific-plugin-versions.html).
+Keep the public version, Git tag, release title and archive version consistent. Packaging fixes may use a later build commit without moving the published tag; record that commit alongside the affected packages and supply the packaging sources.
 
-## Agreed order
+## GitHub release checklist
 
-1. Build a platform-specific development ZIP and test it locally.
-2. After owner acceptance, upload the source project to **https://github.com/FrostBy/AnyPlayer**. No repository creation, commit or push is implicit in this checklist.
-3. Prepare the public license/source materials and Marketplace page fields.
-4. The owner uploads the release archive to Marketplace manually under [Romanovsky](https://plugins.jetbrains.com/vendor/Romanovsky).
+1. Run the checks in [testing.md](testing.md), including Plugin Verifier for the declared IDE line and native tests for each attached platform.
+2. Inspect `plugin.xml`, native tools/libraries, executable permissions, icons, licenses and the absence of duplicate JNA jars.
+3. Attach the platform ZIPs, project sources, dependency source materials and `SHA256SUMS.txt` to the approved release/tag.
+4. Write concise release notes describing shipped behavior, completed platform checks and concrete remaining limits.
+5. Preserve dependency notices and exact source/build inventories. The collected core-source bundle is incomplete for some external libraries; see [third-party notices](../THIRD_PARTY_NOTICES.md).
 
-No automatic publication workflow or publication credentials are configured.
+## Marketplace upload
 
-## Public release gates
+Publication is performed manually by the owner under [Romanovsky](https://plugins.jetbrains.com/vendor/Romanovsky).
 
-- Complete the remaining checks in [testing.md](testing.md) and the [OpenSpec tasks](../openspec/changes/anyplayer-v1/tasks.md). Advertise only products/platforms actually verified.
-- Keep the project GPLv3 `LICENSE` and dependency notices. Assemble the exact corresponding sources/build information for redistributed native dependencies and their included libraries before distributing a public binary.
-- Create the approved GitHub release/tag and attach the matching platform archives and SHA-256 values. Native archives must contain the complete runtime, not just the Java plugin.
-- Capture screenshots from the actual plugin; do not present the browser design studies as product screenshots.
+JetBrains supports OS/CPU-specific updates for IDE 2026.1+. Upload one matching ZIP in the initial **Plugin file** field, then add the others through **Upload Update** on the same plugin page. Each archive must declare `com.intellij.modules.os.<os>` and `com.intellij.modules.arch.<arch>` in its descriptor. The filename alone does not select the platform. A universal ZIP is not required. See [JetBrains platform-specific version guidance](https://plugins.jetbrains.com/docs/marketplace/os-architecture-specific-plugin-versions.html).
 
-## Screenshots and Marketplace media
+Do not run `publishPlugin`: all six variants are configured, and Marketplace publication is owner-managed.
 
-Keep real IDE captures in `docs/screenshots/` and reference those files from the repository README. Capture the same clean sandbox project/window for video, audio analysis and image inspection, using original demonstration media rather than private project files. Keep the IDE chrome, default theme and consistent image dimensions; do not include desktop/browser windows or personal information. JetBrains recommends at least1200×760 pixels.
-
-README images are repository documentation. To display the plugin-page gallery, the owner must upload the [prepared screenshots](screenshots/README.md) separately in **Media** in the Marketplace plugin admin panel after the initial plugin upload. This does not happen automatically when a README or plugin ZIP changes. Keep publication manual as agreed.
-
-Source: [JetBrains Marketplace listing guidance, Media](https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#media).
-
-## Marketplace fields to finish after testing
-
-| Field | Agreed value or pending work |
+| Field | Value |
 | --- | --- |
 | Name | Any Player |
 | Plugin ID | `dev.anyplayer` |
 | Vendor | Romanovsky |
-| License | GNU GPLv3; link to the uploaded repository license |
-| Source code | `https://github.com/FrostBy/AnyPlayer` after upload |
 | Price | Free |
-| Description | Start with “A video player, audio player and image viewer for your IDE.” Describe verified formats, animations, both spectrogram modes, MediaInfo and direct URLs. |
-| Tags | Select relevant tags actually offered by Marketplace at publication time; confirm the available list rather than inventing tag names. |
-| Versions/platforms | Match tested IDE build lines and the native archive being uploaded. |
+| License | GNU GPLv3 |
+| Source | `https://github.com/FrostBy/AnyPlayer` |
+| Description opening | A video player, audio player and image viewer for your IDE. |
+| Platforms | Only the OS/CPU packages and IDE release lines actually validated. |
+| Tags | Relevant tags offered by Marketplace when uploading. |
 
-Source repository: https://github.com/FrostBy/AnyPlayer. The release installer version and archive contents must match its public tag; development build counters are not public release versions.
+## Screenshots
+
+Upload the four prepared [real IDE screenshots](screenshots/README.md) separately under **Media**. The README and plugin ZIP do not populate the Marketplace gallery automatically. Suggested order: video, audio spectrum, waveform, image. Browser mockups in `docs/design/` are design references.

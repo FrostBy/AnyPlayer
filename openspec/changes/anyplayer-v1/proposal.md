@@ -1,6 +1,6 @@
 ## Why
 
-Developers need to inspect local video, audio, images, and media metadata without leaving IntelliJ IDEA. The owner's installed Omni Viewer fails to initialize JavaFX on Windows; Any Player needs a dependable native media backend and an interface that belongs in IDEA.
+Developers need to inspect video, audio, images and media metadata without leaving their JetBrains IDE. Any Player provides a self-contained native media backend and an editor integrated with the IDE.
 
 ## What Changes
 
@@ -30,8 +30,8 @@ Developers need to inspect local video, audio, images, and media metadata withou
 
 ### Modified Capabilities
 
-None. There are no existing application specifications or implementation.
+None; these specifications define the initial plugin capabilities.
 
 ## Impact
 
-The implementation will introduce one Kotlin Gradle plugin project, IntelliJ Platform SDK integration, vlcj and its native bridge dependencies, and packaged libVLC/FFmpeg/MediaInfo binaries. It will add native runtime, UI, lifecycle, and platform integration checks. Design artifacts live in `docs/design/`; executable plugin code is not part of this planning change's current authorization.
+The implementation is one Kotlin/Gradle plugin with IntelliJ Platform SDK integration and packaged libVLC/FFmpeg/MediaInfo binaries. Tests cover native runtime, UI, lifecycle and platform integration. Design references live in `docs/design/`; current validation and outstanding distribution work are recorded in `docs/testing.md` and `tasks.md`.

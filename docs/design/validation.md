@@ -6,7 +6,7 @@ Validated on 2026-10-31. This record covers the browser design artifact and Open
 
 | Check | Result |
 | --- | --- |
-| `openspec validate anyplayer-v1 --strict` | Passed; six capability specifications |
+| `openspec validate anyplayer-v1 --strict` | Passed |
 | `node --check docs/design/preview.js` | Passed |
 | `node --check docs/design/preview.check.js` | Passed |
 | Browser interaction self-check, 1440×1000 | 40 assertions passed |
@@ -36,4 +36,4 @@ Screens were exported with an isolated temporary headless Chrome profile. The an
 
 ## Implementation validation remains a separate gate
 
-The browser study does not establish real playback, callback threading, source-track/PTS mapping, animated-image decoding/composition, native/JNA compatibility, or resource/performance behavior. These are explicitly unchecked implementation tasks in [the OpenSpec checklist](../../openspec/changes/anyplayer-v1/tasks.md), including actual execution on all supported IDEA desktop platforms. The synthetic plot and twelve-frame animation illustrate UI behavior only.
+The browser study does not establish real playback, callback threading, source-track/PTS mapping, animated-image decoding, native/JNA compatibility or performance. See [native plugin validation](../testing.md) and [remaining platform tasks](../../openspec/changes/anyplayer-v1/tasks.md). The synthetic plot and twelve-frame animation illustrate UI behavior only.
