@@ -18,14 +18,14 @@ python3.9 - "$stage" <<'PY'
 from pathlib import Path
 import shutil,subprocess,sys,json
 r=Path(sys.argv[1]); lib=r/'vlc/lib'
-pending=list((r/'vlc').rglob('*.so'))+[r/'bin/mediainfo',lib/'libcurl.so.4']
+pending=[(p,p) for p in list((r/'vlc').rglob('*.so'))+[r/'bin/mediainfo',lib/'libcurl.so.4']]
 seen=set(); owners=set()
 system={'libc.so.6','libm.so.6','libdl.so.2','libpthread.so.0','librt.so.1','libresolv.so.2','libutil.so.1','libanl.so.1'}
 while pending:
-    p=pending.pop()
+    p,original=pending.pop()
     if p in seen: continue
     seen.add(p)
-    out=subprocess.run(['ldd',str(p)],capture_output=True,text=True)
+    out=subprocess.run(['ldd',str(original)],capture_output=True,text=True)
     if out.returncode: raise RuntimeError('Cannot inspect '+str(p)+': '+out.stderr)
     for line in out.stdout.splitlines():
         if 'not found' in line: raise RuntimeError('Missing dependency: '+line)
@@ -33,7 +33,7 @@ while pending:
         src=next((Path(x) for x in fields if x.startswith('/')),None)
         if not src or src.name in system or src.name.startswith('ld-linux'): continue
         dst=lib/src.name
-        if not dst.exists(): shutil.copy2(src.resolve(),dst); pending.append(dst)
+        if not dst.exists(): shutil.copy2(src.resolve(),dst); pending.append((dst,src))
         owner=subprocess.run(['rpm','-qf',str(src)],capture_output=True,text=True).stdout.strip()
         if owner: owners.add(owner)
 for p in seen:
