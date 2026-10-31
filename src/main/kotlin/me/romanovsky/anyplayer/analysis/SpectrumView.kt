@@ -18,6 +18,7 @@ class SpectrumView : JComponent() {
     var live = true
     var liveEnd = 0.0
     var liveWindow = 6.8267
+    var imageWindowSeconds: Double? = null
     var message: String? = "Select an audio track to analyze."
         set(value) { field = value; repaint() }
     var onSeek: (Double) -> Unit = {}
@@ -56,10 +57,13 @@ class SpectrumView : JComponent() {
                 val picture = g.create() as Graphics2D
                 try {
                     picture.clipRect(left, top, plotWidth, plotHeight)
-                    val x = if (live) left + (liveEnd - liveWindow - start) / liveWindow * plotWidth else left.toDouble()
+                    val imageSpan = imageWindowSeconds ?: liveWindow
+                    val x = if (live) left + (liveEnd - imageSpan - start) / liveWindow * plotWidth else left.toDouble()
+                    val imageWidth = if (live) plotWidth * imageSpan / liveWindow else plotWidth.toDouble()
                     picture.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
                     picture.translate(x, top.toDouble())
-                    picture.drawImage(it, 0, 0, plotWidth, plotHeight, null)
+                    picture.scale(imageWidth / it.width, plotHeight.toDouble() / it.height)
+                    picture.drawImage(it, 0, 0, null)
                 } finally { picture.dispose() }
             }
             g.font = JBUI.Fonts.smallFont()

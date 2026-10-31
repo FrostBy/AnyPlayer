@@ -12,7 +12,7 @@
 - [x] 1.10 Apply confirmed review fixes for source routing, image inspection, waveform retention, native preparation, VFS refresh, cancellation and test isolation.
 - [x] 1.11 Add smooth source-clock presentation and buffered analysis scrolling.
 - [x] 1.12 Capture real sandbox screenshots with original media and embed them in README.
-- [x] 1.13 Run 52 SDK/unit and 15 native checks; verify the Windows x64 0.1.0 package against IU-261.22158.277.
+- [x] 1.13 Run 53 SDK/unit and 15 native checks; verify the Windows x64 0.1.0 package against IU-261.22158.277.
 - [x] 1.14 Publish GPLv3 source and the Windows x64 package in the public GitHub 0.1.0 release.
 - [x] 1.15 Configure native-runner builds, installation-ZIP validation and native integration checks for all six OS/CPU targets.
 

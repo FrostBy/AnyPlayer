@@ -14,6 +14,7 @@ Keep the public version, release title and archive version consistent. Record ex
 
 1. Run the checks in [testing.md](testing.md), including Plugin Verifier for the declared IDE line and native tests for each attached platform.
 2. Inspect `plugin.xml`, native tools/libraries, executable permissions, icons, licenses and the absence of duplicate JNA jars.
+   Verify Plugin ID `me.romanovsky.anyplayer`, display name `Any Player`, vendor `Romanovsky` and extension class namespaces inside every packaged JAR.
 3. Attach the platform ZIPs, project sources, dependency source materials and `SHA256SUMS.txt` to the approved release/tag.
 4. Write concise release notes describing shipped behavior, completed platform checks and concrete remaining limits.
 5. Preserve dependency notices and exact source/build inventories. The collected core-source bundle is incomplete for some external libraries; see [third-party notices](../THIRD_PARTY_NOTICES.md).
@@ -26,6 +27,8 @@ JetBrains supports OS/CPU-specific updates for IDE 2026.1+. Upload one matching 
 
 Do not run `publishPlugin`: all six variants are configured, and Marketplace publication is owner-managed.
 
+A listing already created with a different Plugin ID does not change identity when GitHub files are replaced. Resolve that listing with Marketplace before uploading this identity's archives. Remove an earlier development plugin from the IDE before installing this Plugin ID.
+
 | Field | Value |
 | --- | --- |
 | Name | Any Player |
@@ -34,6 +37,8 @@ Do not run `publishPlugin`: all six variants are configured, and Marketplace pub
 | Price | Free |
 | License | GNU GPLv3 |
 | Source | `https://github.com/FrostBy/AnyPlayer` |
+| Documentation | `https://github.com/FrostBy/AnyPlayer#readme` |
+| Bugtracker | `https://github.com/FrostBy/AnyPlayer/issues` |
 | Description opening | A video player, audio player and image viewer for your IDE. |
 | Platforms | Only the OS/CPU packages and IDE release lines actually validated. |
 | Tags | Relevant tags offered by Marketplace when uploading. |

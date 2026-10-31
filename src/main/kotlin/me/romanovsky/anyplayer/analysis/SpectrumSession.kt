@@ -22,10 +22,13 @@ class SpectrumSession(
     canSeek: Boolean = true,
     private val failed: (String) -> Unit,
 ) : Closeable {
-    val width = 640
+    private val sampleRate = stream.sampleRate.coerceAtLeast(1)
+    // Keep data beyond the viewport during bounded frame-clock corrections.
+    val width = (640 + 2 * kotlin.math.ceil(sampleRate * .25 / 512).toInt()).coerceAtMost(4096)
     val height = 256
-    val windowSeconds = width * 512.0 / stream.sampleRate.coerceAtLeast(1)
-    val lookAheadSeconds = if (canSeek) windowSeconds / 2 else 0.0
+    val windowSeconds = 640 * 512.0 / sampleRate
+    val imageWindowSeconds = width * 512.0 / sampleRate
+    val lookAheadSeconds = if (canSeek) imageWindowSeconds / 2 else 0.0
     private val closed = AtomicBoolean()
     private val timestamps = ArrayBlockingQueue<Double>(64)
     private val frames = ArrayBlockingQueue<TimedImage>(32)
@@ -34,7 +37,7 @@ class SpectrumSession(
     private var displayed: TimedImage? = null
     private val worker = Thread.ofVirtual().name("AnyPlayer-live-spectrum").start {
         try {
-            val beginning = (position - windowSeconds / 2).coerceAtLeast(0.0)
+            val beginning = (position - imageWindowSeconds / 2).coerceAtLeast(0.0)
             val seek = if (canSeek) listOf("-seek_timestamp", "1", "-ss", (beginning + sourceStart).toString()) else emptyList()
             val padding = if (canSeek) ",aresample=async=1:first_pts=${(beginning * stream.sampleRate).toLong()}" else ""
             val tail = if (canSeek) ",apad=pad_dur=$lookAheadSeconds" else ""

@@ -18,6 +18,8 @@ FFmpeg decodes the selected source audio separately from VLC output. This preser
 
 Full-file spectra use bounded `showspectrumpic` output. Live spectra use 15 fps `showspectrum` frames with decoded timestamps and bounded look-ahead. Seeks, source/track changes and disposal invalidate obsolete generations. Container starts and delayed audio normalize to the same source timeline.
 
+Live frames include a small decoded margin outside both visible edges. The viewport clips that margin while the presentation clock advances between frames, preventing an exposed moving border without repeating or inventing signal data.
+
 Waveforms stream PCM into bounded per-channel envelope columns. Decoded image bounds remain separate from viewport bounds, allowing Follow to scroll through prefetched neighbors without replacing a valid graph during refill. Manual scrolling disables Follow.
 
 ## Images, animations and seeking

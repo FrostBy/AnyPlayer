@@ -9,5 +9,4 @@ context: |
   Bundle matching native dependencies. Open media by HTTP(S) URL or local path.
   Both full-file and live spectrograms are required. VLC owns audible playback;
   live analysis follows the source track and the playback timeline.
-  The owner approved the design/specification and authorized implementation.
   Public name: Any Player. Artifact/repository name: AnyPlayer. Plugin ID: me.romanovsky.anyplayer.

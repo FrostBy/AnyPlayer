@@ -8,6 +8,30 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SpectrumViewTest {
+    @Test fun `buffered live spectrum covers both edges while its clock moves between frames`() {
+        SwingUtilities.invokeAndWait {
+            val view = SpectrumView().apply {
+                setSize(723, 200)
+                liveWindow = 8.0
+                imageWindowSeconds = 8.5
+                duration = 30.0
+                liveEnd = 14.25
+                message = null
+                frame = BufferedImage(680, 256, BufferedImage.TYPE_INT_RGB).apply {
+                    createGraphics().apply { color = Color.RED; fillRect(0, 0, width, height); dispose() }
+                }
+            }
+            for (position in listOf(9.9, 10.0, 10.1, 10.2)) {
+                view.position = position
+                val painted = BufferedImage(723, 200, BufferedImage.TYPE_INT_RGB)
+                painted.createGraphics().apply { view.paint(this); dispose() }
+                assertEquals("No moving blank strip at the left edge", Color.RED.rgb, painted.getRGB(44, 75))
+                assertEquals("Decoded look-ahead must cover the right edge", Color.RED.rgb, painted.getRGB(680, 75))
+                assertEquals(Color.WHITE.rgb, painted.getRGB(362, 75))
+            }
+        }
+    }
+
     @Test fun `live cursor stays centered and unavailable future data stays empty`() {
         SwingUtilities.invokeAndWait {
             val view = SpectrumView()

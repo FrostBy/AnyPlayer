@@ -2,7 +2,7 @@
 
 ## Release 0.1.0
 
-The release code passed **52 JUnit/IntelliJ SDK checks and 15 native integration checks** on Windows x64. Plugin Verifier reports **Compatible** with IntelliJ IDEA 2026.1, build `IU-261.22158.277`. The owner accepted playback and analysis behavior. Real sandbox screenshots are in [screenshots/](screenshots/README.md).
+The release code passed **53 JUnit/IntelliJ SDK checks and 15 native integration checks** on Windows x64. Plugin Verifier reports **Compatible** with IntelliJ IDEA 2026.1, build `IU-261.22158.277`. Real sandbox screenshots are in [screenshots/](screenshots/README.md).
 
 All six OS/CPU packages passed 15 native integration checks each. Windows x64 passed locally and in CI; the five additional targets passed on matching native runners in [this workflow run](https://github.com/FrostBy/AnyPlayer/actions/runs/41199751436). The workflow builds each ZIP, validates its descriptor and executable permissions, extracts it, then tests that installation. Packages and checksums are in [release assets](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0).
 
@@ -28,7 +28,7 @@ SDK tests accept `-PmediaFixture=<local video>` for an additional finite, seekab
 - Source parsing, URL-secret redaction, Unicode paths, explicit transport-stream/extensionless opening and normal TypeScript editor routing.
 - Real VLC callback frames, play/pause, seeking, speed, tracks, EOF replay and ownership/disposal.
 - Timeline clicks/drags, display-quality paused frames, hover-only previews, cached local refinement and adjacent-frame navigation.
-- Source-time alignment, delayed audio, centered live spectrograms, full-file analysis, waveform zoom/Follow and stereo isolation.
+- Source-time alignment, delayed audio, stable buffered spectrogram edges, centered live spectrograms, full-file analysis, waveform zoom/Follow and stereo isolation.
 - Variable-delay GIF/APNG/WebP, still-image transparency, bounded Fit previews and original-pixel region inspection.
 - HTTP Range input, MediaInfo, settings persistence, no-audio controls, pointer cursors and compact layouts.
 - Stale-result rejection, bounded waveform retention, process failure/cancellation and source immutability.

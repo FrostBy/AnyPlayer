@@ -1368,6 +1368,7 @@ class MediaEditor(private val project: Project, private val virtualFile: Virtual
                     if (view.message != null) view.message = null
                     view.liveEnd = timed.time + session.lookAheadSeconds
                     view.liveWindow = session.windowSeconds
+                    view.imageWindowSeconds = session.imageWindowSeconds
                 }
             }
         }

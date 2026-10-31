@@ -297,7 +297,7 @@ class NativeMediaTest {
             await { failure.get()?.let { throw AssertionError(it) }; session.frameAt(2.0) != null }
             val frame = session.frameAt(2.0)!!
             assertTrue(kotlin.math.abs(frame.time - 2.0) <= .2)
-            assertEquals(640, frame.image.width)
+            assertTrue("Decoded data must include bounded viewport padding", frame.image.width in 641..4096)
             assertEquals(256, frame.image.height)
         } finally { session.close() }
         await { ProcessHandle.current().children().use { children -> children.noneMatch { it.info().command().orElse("").contains("ffmpeg", true) } } }
@@ -316,10 +316,12 @@ class NativeMediaTest {
                 await { error.get()?.let { throw AssertionError(it) }; session.frameAt(position) != null }
                 val frame = session.frameAt(position)!!
                 assertEquals(position, frame.time, .2)
-                assertEquals(session.windowSeconds / 2, session.lookAheadSeconds, .001)
+                assertEquals(session.imageWindowSeconds / 2, session.lookAheadSeconds, .001)
+                assertTrue("Padding must cover frame-clock correction in both directions", session.imageWindowSeconds - session.windowSeconds >= .5)
                 fun energy(x: Int) = (0 until frame.image.height).sumOf { y -> val rgb = frame.image.getRGB(x, y); ((rgb shr 16 and 255) + (rgb shr 8 and 255) + (rgb and 255)).toLong() }
-                if (position == 2.0) assertTrue("Upcoming tone must appear to the right of the central cursor", energy(530) > energy(160) * 2)
-                else assertTrue("Past tone stays left and the post-EOF area stays silent", energy(180) > energy(530) * 2)
+                fun column(time: Double) = ((time - frame.time + session.imageWindowSeconds / 2) / session.imageWindowSeconds * frame.image.width).toInt().coerceIn(0, frame.image.width - 1)
+                if (position == 2.0) assertTrue("Upcoming tone must appear to the right of the central cursor", energy(column(4.5)) > energy(column(1.0)) * 2)
+                else assertTrue("Past tone stays left and the post-EOF area stays silent", energy(column(4.5)) > energy(column(7.0)) * 2)
             } finally { session.close() }
         }
     }

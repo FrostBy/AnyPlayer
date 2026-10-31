@@ -16,7 +16,8 @@
     <change-notes><![CDATA[
         <p>Initial release: video/audio playback, images and seekable animations, live/full-file
         spectrograms, interactive waveforms and MediaInfo. Supports local paths and direct HTTP(S)
-        media URLs. Native packages are available for Windows, macOS and Linux on x86_64 and ARM64.</p>
+        media URLs. Buffered live analysis keeps plot edges stable while scrolling.
+        Native packages are available for Windows, macOS and Linux on x86_64 and ARM64.</p>
     ]]></change-notes>
     <depends>com.intellij.modules.platform</depends>
     <extensions defaultExtensionNs="com.intellij">

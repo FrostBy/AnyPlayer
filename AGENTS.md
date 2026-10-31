@@ -4,6 +4,8 @@
 
 Any Player is a Kotlin/Swing media plugin for JetBrains IDEs.
 
+Plugin ID/package namespace: `me.romanovsky.anyplayer`. Keep the descriptor, loader, registrations and archive checks aligned.
+
 - `src/main/kotlin/me/romanovsky/anyplayer/` contains `editor`, `playback`, `media`, `images` and `analysis` modules. Plugin registration, icons and notices are in `src/main/resources/`.
 - `src/test/kotlin/` contains JUnit, IntelliJ SDK and native integration checks.
 - `native/dependencies.json` pins runtime origins/hashes; `scripts/prepare-native.ps1` prepares ignored platform bundles.
@@ -21,7 +23,7 @@ Use JDK 21+ and the Gradle wrapper. The README documents prerequisites and the i
 
 ## Coding Style & Naming Conventions
 
-Use UTF-8, Kotlin official style and four-space indentation. Types use UpperCamelCase; functions/properties use lowerCamelCase. No standalone formatter/linter task is configured. Keep decoding off the EDT, reject obsolete background results and release owned processes. Reuse existing module helpers before adding abstractions.
+Use UTF-8, `.editorconfig`, Kotlin official style and four-space Kotlin indentation. Types use UpperCamelCase; functions/properties use lowerCamelCase. No standalone formatter/linter task is configured. Keep decoding off the EDT, reject obsolete background results and release owned processes. Reuse existing module helpers before adding abstractions.
 
 ## Testing Guidelines
 

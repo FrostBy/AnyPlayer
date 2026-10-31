@@ -17,7 +17,7 @@ A free, open-source video player, audio player and image viewer for JetBrains ID
 
 ## Installation
 
-Download a matching ZIP from [Any Player 0.1.0](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0). The plugin targets **IntelliJ Platform 2026.1 (261)**.
+Download a matching ZIP from [Any Player 0.1.0](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0). The plugin targets **IntelliJ Platform 2026.1 (261)**. Plugin ID: `me.romanovsky.anyplayer`.
 
 | Operating system | Available architectures |
 | --- | --- |
@@ -27,7 +27,7 @@ Download a matching ZIP from [Any Player 0.1.0](https://github.com/FrostBy/AnyPl
 
 Choose the architecture of the running IDE. For example, use `AnyPlayer-0.1.0-windows-x86_64.zip` for a Windows x64 IDE. Each ZIP includes its media runtime; no separate VLC, FFmpeg or MediaInfo installation is required.
 
-Open **Settings → Plugins → gear menu → Install Plugin from Disk**, select the ZIP and restart. The generic Java-only build is not an installation package.
+Remove an earlier development installation before switching to this Plugin ID. Open **Settings → Plugins → gear menu → Install Plugin from Disk**, select the ZIP and restart. The generic Java-only build is not an installation package.
 
 ## Features
 
