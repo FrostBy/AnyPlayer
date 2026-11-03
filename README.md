@@ -1,5 +1,9 @@
 # Any Player
 
+**English** | [Русский](README.ru.md)
+
+[![Get from JetBrains Marketplace](docs/branding/marketplace.svg)](https://plugins.jetbrains.com/plugin/35683-any-player)
+
 A free, open-source video player, audio player and image viewer for JetBrains IDEs. Publisher: [Romanovsky](https://plugins.jetbrains.com/vendor/Romanovsky).
 
 ![Video playback with a live source-audio spectrogram](docs/screenshots/video.jpg)
@@ -17,7 +21,11 @@ A free, open-source video player, audio player and image viewer for JetBrains ID
 
 ## Installation
 
-Download a matching ZIP from [Any Player 0.1.0](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0). Minimum IDE: **IntelliJ Platform 2026.1 (261)**. The packages do not impose an upper IDE build limit; verified versions are recorded in [testing.md](docs/testing.md). Plugin ID: `me.romanovsky.anyplayer`.
+Install [Any Player from JetBrains Marketplace](https://plugins.jetbrains.com/plugin/35683-any-player), or open **Settings > Plugins > Marketplace**, search for **Any Player** by **Romanovsky**, and install it. Restart the IDE if prompted.
+
+Minimum IDE: **IntelliJ Platform 2026.1 (261)**. The packages do not impose an upper IDE build limit; verified versions are recorded in [testing.md](docs/testing.md). Plugin ID: `me.romanovsky.anyplayer`.
+
+For manual installation, download a matching ZIP from [GitHub Releases](https://github.com/FrostBy/AnyPlayer/releases/tag/v0.1.0).
 
 | Operating system | Available architectures |
 | --- | --- |
